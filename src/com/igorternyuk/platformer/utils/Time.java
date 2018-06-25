@@ -1,4 +1,4 @@
-package platformer.utils;
+package com.igorternyuk.platformer.utils;
 
 /**
  *

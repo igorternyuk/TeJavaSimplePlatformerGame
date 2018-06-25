@@ -1,4 +1,6 @@
-package platformer;
+package com.igorternyuk.platformer.main;
+
+import com.igorternyuk.platformer.gameplay.Game;
 
 /**
  *

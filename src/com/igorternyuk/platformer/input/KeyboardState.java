@@ -1,4 +1,4 @@
-package platformer;
+package com.igorternyuk.platformer.input;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
