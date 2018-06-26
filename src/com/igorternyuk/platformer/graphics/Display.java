@@ -36,6 +36,7 @@ public class Display {
         this.canvas.setPreferredSize(new Dimension(width, height));
         this.canvas.setFocusable(true);
         this.canvas.requestFocus();
+        
         this.window.setResizable(false);
         this.window.getContentPane().add(this.canvas);
         this.window.pack();
@@ -100,7 +101,7 @@ public class Display {
     }
     
     public void addKeyListener(KeyListener listener){
-        this.window.addKeyListener(listener);
+        this.canvas.addKeyListener(listener);
     }
     
     public void addWindowListener(WindowListener listener){

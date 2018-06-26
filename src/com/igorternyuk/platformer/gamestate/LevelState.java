@@ -2,6 +2,7 @@ package com.igorternyuk.platformer.gamestate;
 
 import java.awt.Graphics2D;
 import com.igorternyuk.platformer.input.KeyboardState;
+import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 
 /**
  *
@@ -9,8 +10,8 @@ import com.igorternyuk.platformer.input.KeyboardState;
  */
 public class LevelState extends GameState{
 
-    public LevelState(GameStateManager gsm) {
-        super(gsm);
+    public LevelState(GameStateManager gsm, ResourceManager rm) {
+        super(gsm, rm);
     }
 
     @Override

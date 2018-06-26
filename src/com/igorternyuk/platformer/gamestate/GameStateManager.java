@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 import com.igorternyuk.platformer.input.KeyboardState;
+import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 
 /**
  *
@@ -12,12 +13,14 @@ import com.igorternyuk.platformer.input.KeyboardState;
 public class GameStateManager {
     private static final int MENU_STATE = 0;
     private static final int LEVEL_STATE = 1;
-    
+    private ResourceManager resourceManger;
     private List<GameState> gameStates;
     private int currentState;
     
-    public GameStateManager(){
+    public GameStateManager(ResourceManager rm){
         this.gameStates = new ArrayList<>();
+        this.resourceManger = rm;
+        this.gameStates.add(new MenuState(this, this.resourceManger));
         this.currentState = MENU_STATE;
     }
     

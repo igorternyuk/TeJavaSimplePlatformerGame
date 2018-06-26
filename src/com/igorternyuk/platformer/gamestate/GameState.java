@@ -2,6 +2,7 @@ package com.igorternyuk.platformer.gamestate;
 
 import java.awt.Graphics2D;
 import com.igorternyuk.platformer.input.KeyboardState;
+import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 
 /**
  *
@@ -9,8 +10,10 @@ import com.igorternyuk.platformer.input.KeyboardState;
  */
 public abstract class GameState {
     protected GameStateManager gameStateManager;
-    public GameState(GameStateManager gsm){
+    protected ResourceManager resourceManager;
+    public GameState(GameStateManager gsm, ResourceManager rm){
         this.gameStateManager = gsm;
+        this.resourceManager = rm;
     }
     public abstract void init();
     public abstract void update(KeyboardState keyboardState);

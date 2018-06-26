@@ -11,12 +11,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import com.igorternyuk.platformer.gamestate.GameStateManager;
+import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 import com.igorternyuk.platformer.utils.Time;
 
 /**
  *
- * @author igor
+ * @author igor 
  */
 public class Game implements Runnable {
     public static final int WIDTH = 640;
@@ -50,6 +51,7 @@ public class Game implements Runnable {
             
             @Override
             public void keyReleased(KeyEvent e){
+                System.out.println("keyReleased");
                 gameStateManager.onKeyReleased(e.getKeyCode());
             }
         });
@@ -67,7 +69,8 @@ public class Game implements Runnable {
             }
         });
         this.resourceManager = new ResourceManager(); //TODO Should be singleton
-        this.gameStateManager = new GameStateManager();
+        loadImages();
+        this.gameStateManager = new GameStateManager(this.resourceManager);
     }
     
     public synchronized void start(){
@@ -90,13 +93,20 @@ public class Game implements Runnable {
         cleanUp();
     }
     
+    private void loadImages(){
+        if(!this.resourceManager.loadImage(ImageIdentifier.BACKGROUND,
+                "/Backgrounds/menubg.gif")){
+            System.out.println("Could not load background image");
+        }
+    }
+    
     public void update(){
-        
+        this.gameStateManager.update(this.keyboardState);
     }
     
     public void render(){
         this.display.clear();
-        
+        this.gameStateManager.draw(graphics);
         this.display.swapBuffers();
     }
     
@@ -109,6 +119,7 @@ public class Game implements Runnable {
         long timeSinceLastUpdate = 0;
         long lastTime = Time.get();
         System.out.println("FrameTime = " + FRAME_TIME);
+        
         while(this.running){
             long currentTime = Time.get();
             long elapsedTime = currentTime - lastTime;

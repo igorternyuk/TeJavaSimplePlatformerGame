@@ -3,15 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/MenuState.java</file>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/input/KeyboardState.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/utils/Time.java</file>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/resourcemanager/ResourceIndentifier.java</file>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/Display.java</file>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/Background.java</file>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/GameStateManager.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/GameState.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/LevelState.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/resourcemanager/ImageIdentifier.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/MenuState.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/input/KeyboardState.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/Display.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/Background.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/utils/Painter.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/GameStateManager.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/main/Main.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/Game.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/resourcemanager/ResourceManager.java</file>

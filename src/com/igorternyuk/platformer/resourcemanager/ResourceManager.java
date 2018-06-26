@@ -19,7 +19,7 @@ public class ResourceManager {
         this.images = new HashMap<>();
     }
     
-    private boolean loadImage(ImageIdentifier identifier, String pathToImage){
+    public boolean loadImage(ImageIdentifier identifier, String pathToImage){
         BufferedImage image = null;
         try {
             image = ImageIO.read(
