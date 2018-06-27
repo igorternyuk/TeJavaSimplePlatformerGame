@@ -1,5 +1,6 @@
 package com.igorternyuk.platformer.graphics;
 
+import com.igorternyuk.platformer.gameplay.Game;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -83,7 +84,7 @@ public class Display {
 
     public void swapBuffers() {
         Graphics g = this.bufferStrategy.getDrawGraphics();
-        g.drawImage(this.bufferImage, 0, 0, null);
+        g.drawImage(this.bufferImage, 0, 0,  null);
         this.bufferStrategy.show();
     }
 

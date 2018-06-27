@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * @author igor
  */
 public class TileMap {
-    
+    private static final int SCALE = 2;
     private double x, y;
     private int xmin, xmax, ymin, ymax;
     
@@ -68,12 +68,7 @@ public class TileMap {
         return this.tiles[r][c].getType();
     }
     
-    private TileType getTileTypeForTheTileSet(int row, int col){
-        if(row == 0)
-            return TileType.REGULAR;
-        else 
-            return TileType.BLOCKED;
-    }
+    
     
     public void setPosition(double x, double y){
         this.x += (x - this.x) * 0.1;
@@ -83,6 +78,8 @@ public class TileMap {
         this.colOffset = (int)-this.x / this.tileSize;
         this.rowOffset = (int)-this.y / this.tileSize;
         
+        System.out.println("this.rowOffset = " + this.rowOffset);
+        System.out.println("this.colOffset = " + this.colOffset);
 
     }
     
@@ -129,6 +126,9 @@ public class TileMap {
         this.numTilesX = this.tileSet.getWidth() / this.tileSize;
         this.numTilesY = this.tileSet.getHeight() / this.tileSize;
         
+        System.out.println("this.numTilesX = " + this.numTilesX);
+        System.out.println("this.numTilesY = " + this.numTilesY);
+        
         this.tiles = new Tile[this.numTilesY][this.numTilesX];
         
         for(int i = 0; i < this.numTilesY; ++i){
@@ -141,23 +141,30 @@ public class TileMap {
         }
     }
     
+    private TileType getTileTypeForTheTileSet(int row, int col){
+        if(row == 0)
+            return TileType.REGULAR;
+        else 
+            return TileType.BLOCKED;
+    }
+    
     public void draw(Graphics2D g){
-        for(int row = this.rowOffset; row < this.rowOffset + this.numRowsToDraw; ++row){
+        final int rowMax = this.rowOffset + this.numRowsToDraw;
+        final int colMax = this.colOffset + this.numColsToDraw;
+        for(int row = this.rowOffset; row < rowMax; ++row){
             if(row >= this.numRows)
                 break;
-            for(int col = this.colOffset; col < this.colOffset + this.numColsToDraw; ++col){
+            for(int col = this.colOffset; col < colMax; ++col){
                 if(col >= this.numCols)
                     break;
                 int val = this.map[row][col];
                 int r = val / this.numTilesX;
-                int c = val / this.numTilesX;
+                int c = val % this.numTilesX;
                 BufferedImage image = this.tiles[r][c].getImage();
-                g.drawImage(image, (int)x + col * this.tileSize,
-                        (int)y + row * this.tileSize, null);
+                g.drawImage(image, (int)x + col * SCALE * this.tileSize,
+                        (int)y + row * SCALE * this.tileSize,
+                        SCALE * this.tileSize, SCALE * this.tileSize, null);
             }
         }
     }
-
-    
-    
 }
