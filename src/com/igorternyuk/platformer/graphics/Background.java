@@ -1,7 +1,6 @@
 package com.igorternyuk.platformer.graphics;
 
 import com.igorternyuk.platformer.gameplay.Game;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 

@@ -22,6 +22,7 @@ import com.igorternyuk.platformer.utils.Time;
 public class Game implements Runnable {
     public static final int WIDTH = 640;
     public static final int HEIGHT = 480;
+    public static final int TILE_SIZE = 30;
     private static final String TITLE = "JPlatformer";
     private static final int CLEAR_COLOR = 0xff000000;
     private static final int NUM_BUFFERS = 4;
@@ -51,14 +52,22 @@ public class Game implements Runnable {
             
             @Override
             public void keyReleased(KeyEvent e){
-                System.out.println("keyReleased");
                 gameStateManager.onKeyReleased(e.getKeyCode());
             }
         });
         this.display.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e){
-                int reply = JOptionPane.showConfirmDialog(display.getWindow(),
+                onWindowCloseRequest();
+            }
+        });
+        this.resourceManager = new ResourceManager(); //TODO Should be singleton
+        loadImages();
+        this.gameStateManager = new GameStateManager(this, this.resourceManager);
+    }
+    
+    public void onWindowCloseRequest(){
+        int reply = JOptionPane.showConfirmDialog(display.getWindow(),
                         "Do you really want to exit?",
                         "Confirm exit, please",
                         JOptionPane.YES_NO_OPTION);
@@ -66,11 +75,6 @@ public class Game implements Runnable {
                     stop();
                     System.exit(0);
                 }
-            }
-        });
-        this.resourceManager = new ResourceManager(); //TODO Should be singleton
-        loadImages();
-        this.gameStateManager = new GameStateManager(this.resourceManager);
     }
     
     public synchronized void start(){
@@ -94,10 +98,12 @@ public class Game implements Runnable {
     }
     
     private void loadImages(){
-        if(!this.resourceManager.loadImage(ImageIdentifier.BACKGROUND,
+        if(!this.resourceManager.loadImage(ImageIdentifier.MENU_BACKGROUND,
                 "/Backgrounds/menubg.gif")){
             System.out.println("Could not load background image");
         }
+        
+        
     }
     
     public void update(){

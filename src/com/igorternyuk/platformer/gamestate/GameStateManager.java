@@ -1,5 +1,6 @@
 package com.igorternyuk.platformer.gamestate;
 
+import com.igorternyuk.platformer.gameplay.Game;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,17 +12,24 @@ import com.igorternyuk.platformer.resourcemanager.ResourceManager;
  * @author igor
  */
 public class GameStateManager {
-    private static final int MENU_STATE = 0;
-    private static final int LEVEL_STATE = 1;
+    public static final int MENU_STATE = 0;
+    public static final int LEVEL_STATE = 1;
+    private Game game;
     private ResourceManager resourceManger;
     private List<GameState> gameStates;
     private int currentState;
     
-    public GameStateManager(ResourceManager rm){
+    public GameStateManager(Game game, ResourceManager rm){
+        this.game = game;
         this.gameStates = new ArrayList<>();
         this.resourceManger = rm;
-        this.gameStates.add(new MenuState(this, this.resourceManger));
+        this.gameStates.add(new MenuState(this, rm));
+        this.gameStates.add(new LevelState(this, rm));
         this.currentState = MENU_STATE;
+    }
+    
+    public Game getGame(){
+        return this.game;
     }
     
     public void setCurrentState(int index){

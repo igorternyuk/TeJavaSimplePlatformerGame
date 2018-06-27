@@ -30,7 +30,7 @@ public class MenuState extends GameState{
 
     public MenuState(GameStateManager gsm, ResourceManager rm) {
         super(gsm, rm);
-        this.background = new Background(rm.getImage(ImageIdentifier.BACKGROUND));
+        this.background = new Background(rm.getImage(ImageIdentifier.MENU_BACKGROUND));
         this.background.setPosition(0, 0);
         this.background.setSpeed(0.1, 0);
         this.options = new String[]{"Play", "Help", "Quit"};
@@ -43,20 +43,26 @@ public class MenuState extends GameState{
     @Override
     public void update(KeyboardState keyboardState) {
         this.background.update();
-        /*if(keyboardState.isKeyPressed(KeyEvent.VK_UP)){
-            --this.currentChoice;
-            checkIndex();
-        } else if(keyboardState.isKeyPressed(KeyEvent.VK_DOWN)){
-            ++this.currentChoice;
-            checkIndex();
-        }*/
     }
     
-    private void checkIndex(){
+    private void correctIndex(){
         if(this.currentChoice < 0){
             this.currentChoice = this.options.length - 1;
         } else if(this.currentChoice >= this.options.length){
             this.currentChoice = 0;
+        }
+    }
+    
+    private void select(int index){
+        switch(index){
+            case 0:
+                this.gameStateManager.setCurrentState(GameStateManager.LEVEL_STATE);
+                break;
+            case 1:
+                break;
+            case 2:
+                this.gameStateManager.getGame().onWindowCloseRequest();
+                break;
         }
     }
 
@@ -66,13 +72,20 @@ public class MenuState extends GameState{
 
     @Override
     public void onKeyReleased(int keyCode) {
-        System.out.println("MenuState keyReleased");
-        if(keyCode == KeyEvent.VK_UP){
-            --this.currentChoice;
-        } else if(keyCode == KeyEvent.VK_DOWN){
-            ++this.currentChoice;
+        switch (keyCode) {
+            case KeyEvent.VK_UP:
+                --this.currentChoice;
+                break;
+            case KeyEvent.VK_DOWN:
+                ++this.currentChoice;
+                break;
+            case KeyEvent.VK_ENTER:
+                select(this.currentChoice);
+                break;
+            default:
+                break;
         }
-        checkIndex();
+        correctIndex();
     }
 
     @Override
