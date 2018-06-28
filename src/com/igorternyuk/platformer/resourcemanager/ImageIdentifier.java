@@ -7,5 +7,6 @@ package com.igorternyuk.platformer.resourcemanager;
 public enum ImageIdentifier {
     MENU_BACKGROUND,
     PLAY_BACKGROUND,
-    TILE_SET;
+    TILE_SET,
+    PLAYER_SPRITE_SHEET;
 }

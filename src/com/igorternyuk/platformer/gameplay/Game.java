@@ -152,7 +152,8 @@ public class Game implements Runnable {
                 try {
                     Thread.sleep(IDLE_TIME);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Game.class.getName()).log(Level.SEVERE, 
+                            null, ex);
                 }
             }
             

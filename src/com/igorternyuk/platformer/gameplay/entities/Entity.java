@@ -41,8 +41,6 @@ public abstract class Entity<AnimationIdentifier> {
     //Animation
     protected AnimationManager<AnimationIdentifier> animationMananger;
     
-    protected boolean isAlive = true;
-    
     public Entity(TileMap tileMap){
         this.tileMap = tileMap;
         this.tileSize = this.tileMap.getTileSize();
@@ -54,7 +52,7 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     public int bottom(){
-        return (int)this.y + this.height;
+        return (int)this.y + getHeight();
     }
     
     public int left(){
@@ -62,7 +60,7 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     public int right(){
-        return (int)this.x + this.width;
+        return (int)this.x + getWidth();
     }
     
     public int getMapX(){
@@ -86,7 +84,7 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     public int getAbsBottom(){
-        return getAbsY() + this.height;
+        return getAbsY() + getHeight();
     }
     
     public int getAbsLeft(){
@@ -94,7 +92,7 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     public int getAbsRight(){
-        return getAbsX() + this.width;
+        return getAbsX() + getWidth();
     }
     
     public boolean isOnTheScreen(){
@@ -105,11 +103,11 @@ public abstract class Entity<AnimationIdentifier> {
     }
 
     public int getWidth() {
-        return this.width;
+        return this.animationMananger.getCurrentAnimation().getCurrentFrameWidth();
     }
 
     public int getHeight() {
-        return this.height;
+        return this.animationMananger.getCurrentAnimation().getCurrentFrameHeight();
     }
 
     public double getVelX() {
@@ -149,8 +147,6 @@ public abstract class Entity<AnimationIdentifier> {
     public void setJumping(boolean jumping) {
         this.jumping = jumping;
     }
-    
-    
     
     public void update(KeyboardState keyboardState, float frameTime){
         this.x += this.velX * frameTime;
@@ -222,5 +218,6 @@ public abstract class Entity<AnimationIdentifier> {
         }
     }
     
+    public abstract boolean isAlive();
     public abstract void draw(Graphics2D g);
 }

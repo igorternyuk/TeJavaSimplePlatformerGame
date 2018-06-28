@@ -19,8 +19,8 @@ public class AnimationManager<Identifier> {
         }
     }
     
-    public Identifier getCurrentAnimation(){
-        return this.currentAnimation;
+    public Animation getCurrentAnimation(){
+        return this.animations.get(this.currentAnimation);
     }
     
     public void addAnimation(Identifier identifier, Animation animation){
@@ -32,12 +32,12 @@ public class AnimationManager<Identifier> {
     }
     
     public void update(double frameTime){
-        this.animations.get(this.currentAnimation).update(frameTime);
+        getCurrentAnimation().update(frameTime);
     }
     
     public void draw(Graphics2D g, int destX, int destY, double scaleX,
             double scaleY){
-        this.animations.get(this.currentAnimation).draw(g, destX, destY,
+        getCurrentAnimation().draw(g, destX, destY,
                 scaleX, scaleY);
     }
 }

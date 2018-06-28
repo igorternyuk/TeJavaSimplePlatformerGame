@@ -19,8 +19,9 @@ public class Animation {
     private boolean isPlaying = false;
     private boolean loopAnimation = true;
     
-    public Animation(BufferedImage image, int x, int y, int width, int height,
-            double speed, int frameCount, int frameStep){
+    public Animation(BufferedImage image, double speed,
+            int x, int y, int width, int height,
+            int frameCount, int frameStep){
         this.image = image;
         this.speed = speed;
         
@@ -28,6 +29,24 @@ public class Animation {
             Rectangle rect = new Rectangle(x + i * frameStep, y, width, height);
             this.frames.add(rect);
         }
+    }
+    
+    public Animation(BufferedImage image, double speed, List<Rectangle> frames){
+        this.image = image;
+        this.speed = speed;
+        this.frames.addAll(frames);        
+    }
+    
+    public Rectangle getCurrentRect(){
+        return this.frames.get(this.currentFrame);
+    }
+    
+    public int getCurrentFrameWidth(){
+        return getCurrentRect().width;
+    }
+    
+    public int getCurrentFrameHeight(){
+        return getCurrentRect().height;
     }
     
     public void start(boolean loop){

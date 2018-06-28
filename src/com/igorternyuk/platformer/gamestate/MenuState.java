@@ -1,8 +1,6 @@
 package com.igorternyuk.platformer.gamestate;
 
 import com.igorternyuk.platformer.gameplay.Game;
-import static com.igorternyuk.platformer.gameplay.Game.HEIGHT;
-import static com.igorternyuk.platformer.gameplay.Game.WIDTH;
 import com.igorternyuk.platformer.graphics.Background;
 import java.awt.Graphics2D;
 import com.igorternyuk.platformer.input.KeyboardState;
@@ -100,6 +98,5 @@ public class MenuState extends GameState{
             Painter.drawCenteredString(g, this.options[i], FONT_MENU_ITEM,
                 color, Game.HEIGHT / 3 + (i + 1) * Game.HEIGHT / 12);
         }
-    }
-    
+    }    
 }

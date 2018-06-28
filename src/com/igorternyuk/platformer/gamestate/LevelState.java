@@ -30,6 +30,8 @@ public class LevelState extends GameState{
         this.tileMap.loadTileSet("/Tilesets/grasstileset.gif");
         this.tileMap.loadMap("/Maps/level1.map");
         this.tileMap.setPosition(0, 0);
+        this.resourceManager.loadImage(ImageIdentifier.PLAYER_SPRITE_SHEET,
+                "/Sprites/Player/playerSpriteSheet.png");
     }
 
     @Override
