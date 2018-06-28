@@ -28,6 +28,7 @@ public class Game implements Runnable {
     private static final int NUM_BUFFERS = 4;
     private static final float FPS = 60.0f;
     private static final float FRAME_TIME = Time.SECOND / FPS;
+    private static final float FRAME_TIME_IN_SECONDS = 1 / FPS;
     private static final long IDLE_TIME = 1;
     
     private boolean running = false;

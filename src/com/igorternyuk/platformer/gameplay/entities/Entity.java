@@ -8,9 +8,12 @@ import com.igorternyuk.platformer.gameplay.tilemap.TileType;
  * @author igor
  */
 public abstract class Entity {
+    //Tile stuff
     protected TileMap tileMap;
-    //Geometry
     protected int tileSize;
+    
+    //Geometry
+    
     protected double relX, relY, absX, absY;
     protected int width, height;
     
@@ -47,10 +50,10 @@ public abstract class Entity {
     }
     
     public boolean collides(Entity other){
-        return this.right() < other.left()
+        return !(this.right() < other.left()
                 || this.left() > other.right()
                 || this.top() > other.bottom()
-                || this.bottom() < other.top();
+                || this.bottom() < other.top());
     }
     
     public void handleMapCollision(boolean isVerticalMovement){
@@ -77,28 +80,3 @@ public abstract class Entity {
         }
     }
 }
-
-
-/*
- void Collision(int dir)
-   {
-     for (int i = rect.top/32 ; i<(rect.top+rect.height)/32; i++)
-	  for (int j = rect.left/32; j<(rect.left+rect.width)/32; j++)
-		{ 
-	  	 if (TileMap[i][j]=='B') 
-		   { 
-	        if ((dx>0) && (dir==0)) rect.left =  j*32 -  rect.width; 
-		if ((dx<0) && (dir==0)) rect.left =  j*32 + 32;
-		if ((dy>0) && (dir==1))  { rect.top =   i*32 -  rect.height;  dy=0;   onGround=true; }
-		if ((dy<0) && (dir==1))  { rect.top = i*32 + 32;   dy=0;}
-		   }
-		 
-		 if (TileMap[i][j]=='0') 
-		                   { 
-			                 TileMap[i][j]=' ';
-		                   }
-	         	
-    	}
-   
-   }
-*/
