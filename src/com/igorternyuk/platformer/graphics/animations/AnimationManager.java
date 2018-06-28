@@ -13,17 +13,21 @@ public class AnimationManager<Identifier> {
     private Map<Identifier, Animation> animations = new HashMap<>();
     private Identifier currentAnimation;
     
-    public void set(Identifier identifier){
+    public void setCurrentAnimation(Identifier identifier){
         if(this.animations.containsKey(identifier)){
             this.currentAnimation = identifier;
         }
     }
     
-    public void add(Identifier identifier, Animation animation){
+    public Identifier getCurrentAnimation(){
+        return this.currentAnimation;
+    }
+    
+    public void addAnimation(Identifier identifier, Animation animation){
         this.animations.put(identifier, animation);
     }
     
-    public void remove(Identifier identifier){
+    public void removeAnimation(Identifier identifier){
         this.animations.remove(identifier);
     }
     
