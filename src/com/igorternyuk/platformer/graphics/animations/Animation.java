@@ -47,7 +47,7 @@ public class Animation {
         if(!this.isPlaying)
             return;
         this.currentFrameTime += frameTime;
-        if(this.currentFrame >= speed){
+        if(this.currentFrameTime >= speed){
             ++this.currentFrame;
             if(this.currentFrame >= this.frames.size()){
                 this.currentFrame = 0;
@@ -59,9 +59,10 @@ public class Animation {
         }
     }
     
-    public void draw(Graphics2D g, int x, int y, double scaleX, double scaleY){
+    public void draw(Graphics2D g, int destX, int destY, double scaleX,
+            double scaleY){
         Rectangle currentRect = this.frames.get(this.currentFrame);
-        g.drawImage(this.image, x, y, (int)(currentRect.width * scaleX),
+        g.drawImage(this.image, destX, destY, (int)(currentRect.width * scaleX),
                 (int)(currentRect.height * scaleY), currentRect.x,
                 currentRect.y, currentRect.width, currentRect.height, null);
         
