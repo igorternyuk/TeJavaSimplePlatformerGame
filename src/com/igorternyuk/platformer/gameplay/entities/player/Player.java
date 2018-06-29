@@ -4,6 +4,7 @@ import com.igorternyuk.platformer.gameplay.entities.Entity;
 import com.igorternyuk.platformer.gameplay.entities.weapon.FireBall;
 import com.igorternyuk.platformer.gameplay.tilemap.TileMap;
 import com.igorternyuk.platformer.graphics.animations.Animation;
+import com.igorternyuk.platformer.input.KeyboardState;
 import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 import java.awt.Graphics2D;
@@ -33,12 +34,14 @@ public class Player extends Entity<PlayerState>{
     
     private boolean gliding = false;
     private ResourceManager resourceMananger;
-    private PlayerState playerState;
+    private PlayerState playerState = PlayerState.IDLE;
     
     public Player(TileMap tileMap, ResourceManager rm) {
         super(tileMap);
         this.resourceMananger = rm;
         this.playerState = PlayerState.IDLE;
+        this.velocity = 0.3;
+        this.maxVelocity = 1.6;
         loadAnimations();
     }
        
@@ -66,6 +69,10 @@ public class Player extends Entity<PlayerState>{
         this.animationMananger.addAnimation(
                 PlayerState.SCRATCHING,
                 new Animation(spriteSheet, 0.1, PlayerState.SCRATCHING.getFrames()));
+    }
+    
+    public void update(KeyboardState keyboardState, double frameTime){
+        
     }
 
     @Override

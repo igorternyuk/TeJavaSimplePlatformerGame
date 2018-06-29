@@ -35,7 +35,7 @@ public class LevelState extends GameState{
     }
 
     @Override
-    public void update(KeyboardState keyboardState) {
+    public void update(KeyboardState keyboardState, double frameTime) {
     }
 
     @Override

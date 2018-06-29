@@ -108,7 +108,7 @@ public class Game implements Runnable {
     }
     
     public void update(){
-        this.gameStateManager.update(this.keyboardState);
+        this.gameStateManager.update(this.keyboardState, FRAME_TIME_IN_SECONDS);
     }
     
     public void render(){

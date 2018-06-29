@@ -16,7 +16,7 @@ public abstract class GameState {
         this.resourceManager = rm;
     }
     public abstract void init();
-    public abstract void update(KeyboardState keyboardState);
+    public abstract void update(KeyboardState keyboardState, double frameTime);
     public abstract void onKeyPressed(int keyCode);
     public abstract void onKeyReleased(int keyCode);
     public abstract void draw(Graphics2D g);

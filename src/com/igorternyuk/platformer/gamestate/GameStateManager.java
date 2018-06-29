@@ -37,8 +37,8 @@ public class GameStateManager {
         this.gameStates.get(index).init();
     }
     
-    public void update(KeyboardState keyboardState){
-        this.gameStates.get(currentState).update(keyboardState);
+    public void update(KeyboardState keyboardState, double frameTime){
+        this.gameStates.get(currentState).update(keyboardState, frameTime);
     }
     
     public void onKeyPressed(int keyCode){

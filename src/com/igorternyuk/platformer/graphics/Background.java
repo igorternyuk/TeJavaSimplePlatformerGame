@@ -1,6 +1,7 @@
 package com.igorternyuk.platformer.graphics;
 
 import com.igorternyuk.platformer.gameplay.Game;
+import com.igorternyuk.platformer.input.KeyboardState;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -36,7 +37,7 @@ public class Background {
         this.dy = dy;
     }
     
-    public void update(){
+    public void update(KeyboardState keyBoardState, double frameTime){
         this.x += this.dx * SCROLLING_SPEED;
         this.y += this.dy * SCROLLING_SPEED;
         

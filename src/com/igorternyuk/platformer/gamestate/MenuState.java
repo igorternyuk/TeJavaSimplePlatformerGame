@@ -39,8 +39,8 @@ public class MenuState extends GameState{
     }
 
     @Override
-    public void update(KeyboardState keyboardState) {
-        this.background.update();
+    public void update(KeyboardState keyboardState, double frameTime) {
+        this.background.update(keyboardState, frameTime);
     }
     
     private void correctIndex(){

@@ -14,31 +14,57 @@ public class Animation {
     private double currentFrameTime;
     private int currentFrame = 0;
     private double speed;
+    private int frameCount;
     private BufferedImage image;
-    private List<Rectangle> frames = new ArrayList<>();
+    private List<Rectangle> frames;
+    private List<Rectangle> flippedFrames;
     private boolean isPlaying = false;
     private boolean loopAnimation = true;
+    private boolean flipped = false;
     
     public Animation(BufferedImage image, double speed,
             int x, int y, int width, int height,
             int frameCount, int frameStep){
         this.image = image;
         this.speed = speed;
-        
+        this.frameCount = frameCount;
+        this.frames = new ArrayList<>(this.frameCount);
+        this.flippedFrames = new ArrayList<>(this.frameCount);
+    
         for(int i = 0; i < frameCount; ++i){
             Rectangle rect = new Rectangle(x + i * frameStep, y, width, height);
             this.frames.add(rect);
+            Rectangle flippedRect = new Rectangle(x + i * frameStep + width, y,
+                    -width, height);
+            this.flippedFrames.add(flippedRect);
         }
     }
     
     public Animation(BufferedImage image, double speed, List<Rectangle> frames){
         this.image = image;
         this.speed = speed;
-        this.frames.addAll(frames);        
+        this.frameCount = frames.size();
+        this.frames = new ArrayList<>(this.frameCount);
+        this.flippedFrames = new ArrayList<>(this.frameCount);
+        this.frames.addAll(frames); 
+        frames.stream().map((frame) -> new Rectangle(frame.x + frame.width,
+                frame.y, -frame.width, frame.height)).forEachOrdered((flippedFrame) -> {
+                    this.flippedFrames.add(flippedFrame);
+        });
+    }
+
+    public boolean isFlipped() {
+        return flipped;
+    }
+
+    public void setFlipped(boolean flipped) {
+        this.flipped = flipped;
     }
     
     public Rectangle getCurrentRect(){
-        return this.frames.get(this.currentFrame);
+        return this.flipped
+                ? this.flippedFrames.get(this.currentFrame)
+                : this.frames.get(this.currentFrame);
     }
     
     public int getCurrentFrameWidth(){
