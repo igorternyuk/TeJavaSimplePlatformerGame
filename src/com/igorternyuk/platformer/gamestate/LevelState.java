@@ -1,6 +1,7 @@
 package com.igorternyuk.platformer.gamestate;
 
 import com.igorternyuk.platformer.gameplay.Game;
+import com.igorternyuk.platformer.gameplay.entities.player.Player;
 import com.igorternyuk.platformer.gameplay.tilemap.TileMap;
 import com.igorternyuk.platformer.graphics.Background;
 import java.awt.Graphics2D;
@@ -15,8 +16,9 @@ import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 public class LevelState extends GameState{
     private TileMap tileMap;
     private Background background;
+    private Player player;
     public LevelState(GameStateManager gsm, ResourceManager rm) {
-        super(gsm, rm);
+        super(gsm, rm);        
     }
 
     @Override
@@ -32,10 +34,15 @@ public class LevelState extends GameState{
         this.tileMap.setPosition(0, 0);
         this.resourceManager.loadImage(ImageIdentifier.PLAYER_SPRITE_SHEET,
                 "/Sprites/Player/playerSpriteSheet.png");
+        this.player = new Player(this.tileMap, this.resourceManager);
+        this.player.setPosition(2 * 30, 6 * 30);
     }
 
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
+        if(this.player != null){
+            this.player.update(keyboardState, frameTime);
+        }
     }
 
     @Override
@@ -54,6 +61,10 @@ public class LevelState extends GameState{
         
         if(this.tileMap != null){
             this.tileMap.draw(g);
+        }
+        
+        if(this.player != null){
+            this.player.draw(g);
         }
     }
     

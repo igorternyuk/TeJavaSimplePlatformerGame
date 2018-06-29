@@ -11,12 +11,17 @@ import java.util.Map;
  */
 public class AnimationManager<Identifier> {
     private Map<Identifier, Animation> animations = new HashMap<>();
-    private Identifier currentAnimation;
+    private Identifier currentAnimation, prevAnimation;
     
     public void setCurrentAnimation(Identifier identifier){
         if(this.animations.containsKey(identifier)){
             this.currentAnimation = identifier;
+            this.prevAnimation = identifier;
         }
+    }
+    
+    public void setPreviousAnimation(){
+        this.currentAnimation = this.prevAnimation;
     }
     
     public Animation getCurrentAnimation(){
@@ -32,12 +37,18 @@ public class AnimationManager<Identifier> {
     }
     
     public void update(double frameTime){
-        getCurrentAnimation().update(frameTime);
+        Animation currAnim = getCurrentAnimation();
+        if(currAnim != null){
+            currAnim.update(frameTime);
+        }
     }
     
     public void draw(Graphics2D g, int destX, int destY, double scaleX,
             double scaleY){
-        getCurrentAnimation().draw(g, destX, destY,
-                scaleX, scaleY);
+        Animation currAnim = getCurrentAnimation();
+        if(currAnim != null){
+            currAnim.draw(g, destX, destY, scaleX, scaleY);
+        }
+        
     }
 }

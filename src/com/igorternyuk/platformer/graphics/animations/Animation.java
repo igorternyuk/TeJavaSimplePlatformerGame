@@ -107,9 +107,15 @@ public class Animation {
     public void draw(Graphics2D g, int destX, int destY, double scaleX,
             double scaleY){
         Rectangle currentRect = this.frames.get(this.currentFrame);
-        g.drawImage(this.image, destX, destY, (int)(currentRect.width * scaleX),
-                (int)(currentRect.height * scaleY), currentRect.x,
-                currentRect.y, currentRect.width, currentRect.height, null);
+        int dx1 = (int)(destX * scaleX);
+        int dy1 = (int)(destY * scaleY);
+        int dx2 = dx1 + (int)(currentRect.width * scaleX);
+        int dy2 = dy1 + (int)(currentRect.height * scaleY);
+        g.drawImage(this.image, dx1, dy1, dx2, dy2
+                , currentRect.x, currentRect.y
+                , currentRect.x + currentRect.width
+                , currentRect.y + currentRect.height
+                , null);
         
     }
 }

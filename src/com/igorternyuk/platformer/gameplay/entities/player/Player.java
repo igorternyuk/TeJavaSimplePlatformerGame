@@ -35,6 +35,7 @@ public class Player extends Entity<PlayerState>{
     private boolean gliding = false;
     private ResourceManager resourceMananger;
     private PlayerState playerState = PlayerState.IDLE;
+    private BufferedImage testImage;
     
     public Player(TileMap tileMap, ResourceManager rm) {
         super(tileMap);
@@ -43,6 +44,9 @@ public class Player extends Entity<PlayerState>{
         this.velocity = 0.3;
         this.maxVelocity = 1.6;
         loadAnimations();
+        this.animationMananger.setCurrentAnimation(PlayerState.GLIDING);
+        this.animationMananger.getCurrentAnimation().start(true);
+        this.testImage = this.resourceMananger.getImage(ImageIdentifier.PLAYER_SPRITE_SHEET);
     }
        
     private void loadAnimations(){
@@ -72,11 +76,18 @@ public class Player extends Entity<PlayerState>{
     }
     
     public void update(KeyboardState keyboardState, double frameTime){
-        
+        this.animationMananger.update(frameTime);
     }
 
     @Override
     public void draw(Graphics2D g) {
+        //System.out.println("mapx = " + this.tileMap.getX() + " mapy = " + this.tileMap.getY());
+        //System.out.println("playerAbsX = " + getAbsX() + " playerAbsY = " + getAbsY());
+        this.animationMananger.draw(g, getAbsX(), getAbsY(), 2, 2);
+        //g.drawImage(testImage, getAbsX(), getAbsY(), null);
+        /*g.drawImage(testImage, getAbsX(), getAbsY(), getAbsX() + 50,
+                getAbsY() + 62, 0, 1, 25, 31, null);*/
+//        g.drawImage(testImage, getAbsX(), getAbsY(), 50, 60, 0, 1, 25, 30, null);
     }
 
     @Override

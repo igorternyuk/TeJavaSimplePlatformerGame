@@ -25,7 +25,7 @@ public abstract class Entity<AnimationIdentifier> {
     //Physics
     protected double velX, velY;
     protected double velocity, maxVelocity;
-    protected double jumpVelocity;
+    protected double jumpVelocity, maxJumpVelocity;
     protected double gravity;
     protected double deceleration;
     protected double fallingSpeed;

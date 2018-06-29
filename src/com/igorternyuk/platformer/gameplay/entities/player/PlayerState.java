@@ -9,10 +9,10 @@ import java.util.List;
  * @author igor
  */
 public enum PlayerState {
-        IDLE(0,1,55,25,2,30),
-        WALKING(0,32,235,30,8,30),
-        JUMPING(0,62,20,30,1,30),
-        FALLING(0,94,60,30,2,30),
+        IDLE(0,1,25,30,2,30),
+        WALKING(0,32,25,29,8,30),
+        JUMPING(0,62,19,30,1,30),
+        FALLING(0,94,30,30,2,30),
         GLIDING(getGlidingFrames()),
         FIREBALLING(getFireBallAttackFrames()),
         SCRATCHING(getScratchingAttackFrames());

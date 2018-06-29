@@ -103,8 +103,6 @@ public class Game implements Runnable {
                 "/Backgrounds/menubg.gif")){
             System.out.println("Could not load background image");
         }
-        
-        
     }
     
     public void update(){
