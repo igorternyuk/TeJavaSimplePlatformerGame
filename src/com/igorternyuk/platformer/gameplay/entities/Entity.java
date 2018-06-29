@@ -25,21 +25,22 @@ public abstract class Entity<AnimationIdentifier> {
     //Physics
     protected double velX, velY;
     protected double velocity, maxVelocity;
-    protected double jumpVelocity, maxJumpVelocity;
-    protected double gravity;
+    protected double acceleration;
     protected double deceleration;
-    protected double fallingSpeed;
-    protected double maxFallingSpeed;
+    protected double jumpVelocityInitial, maxJumpVelocity;
+    protected double verticalAcceleration;
+    protected double fallingSpeed, maxFallingSpeed;
+    protected double gravity;
     protected boolean movingRight = false;
     protected boolean movingLeft = false;
     protected boolean movingUp = false;
     protected boolean movingDown = false;
     protected boolean jumping = false;
-    protected boolean isFalling = false;
-    protected boolean isOnGround = false;
+    protected boolean onGround = false;
     
     //Animation
     protected AnimationManager<AnimationIdentifier> animationMananger;
+
     
     public Entity(TileMap tileMap){
         this.tileMap = tileMap;
@@ -143,6 +144,13 @@ public abstract class Entity<AnimationIdentifier> {
     public void setMovingDown(boolean movingDown) {
         this.movingDown = movingDown;
     }
+    
+    public void resetMoving(){
+        this.movingDown = false;
+        this.movingUp = false;
+        this.movingLeft = false;
+        this.movingRight = false;
+    }
 
     public void setJumping(boolean jumping) {
         this.jumping = jumping;
@@ -151,41 +159,15 @@ public abstract class Entity<AnimationIdentifier> {
     public void update(KeyboardState keyboardState, float frameTime){
         this.x += this.velX * frameTime;
         handleMapCollision(false);
-        if(!this.isOnGround){
+        if(!this.onGround){
             this.velY += gravity * frameTime;
             this.y += this.velY;
-            this.isOnGround = false;
+            this.onGround = false;
             handleMapCollision(true);
         }
-        this.velX = 0;
+        //this.velX = 0;
     }
-    
-    /*
-       void update(float time)
-   {	
-
-	 rect.left += dx * time;	
-	 Collision(0);
-
-	 if (!onGround) dy=dy+0.0005*time;
-	 rect.top += dy*time;
-	 onGround=false;
-     Collision(1);
-  
-	 
-	  currentFrame += 0.005*time;
-	  if (currentFrame > 6) currentFrame -=6 ;
-
-	  if (dx>0) sprite.setTextureRect(IntRect(40*int(currentFrame),244,40,50));
-	  if (dx<0) sprite.setTextureRect(IntRect(40*int(currentFrame)+40,244,-40,50));
-	 
-
-	  sprite.setPosition(rect.left - offsetX, rect.top - offsetY);
-
-	  dx=0;
-   }
-    */
-    
+        
     public boolean collides(Entity other){
         return !(this.right() < other.left()
                 || this.left() > other.right()
@@ -202,8 +184,7 @@ public abstract class Entity<AnimationIdentifier> {
                             this.y = row * this.tileSize + this.tileSize;
                         } else if(this.velY > 0){
                             this.y = row * this.tileSize - this.tileSize;
-                            this.isOnGround = true;
-                            this.isFalling = false;
+                            this.onGround = true;
                             this.velY = 0;
                         }
                     } else {

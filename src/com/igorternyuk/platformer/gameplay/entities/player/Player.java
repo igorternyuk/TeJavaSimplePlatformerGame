@@ -4,10 +4,13 @@ import com.igorternyuk.platformer.gameplay.entities.Entity;
 import com.igorternyuk.platformer.gameplay.entities.weapon.FireBall;
 import com.igorternyuk.platformer.gameplay.tilemap.TileMap;
 import com.igorternyuk.platformer.graphics.animations.Animation;
+import com.igorternyuk.platformer.graphics.animations.AnimationFacing;
+import com.igorternyuk.platformer.graphics.animations.AnimationPlayMode;
 import com.igorternyuk.platformer.input.KeyboardState;
 import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
@@ -16,13 +19,15 @@ import java.util.ArrayList;
  *
  * @author igor
  */
-public class Player extends Entity<PlayerState>{
+public class Player extends Entity<PlayerAction>{
+    private static final double FLINCH_PERIOD = 0.1;
+    private static final double FACTOR_OF_AIR_RESISTANCE = 0.1;
     private int health;
     private int maxHealth;
     private int fire;
     private int maxFire;
     private boolean flinching = false;
-    private long flichTime;
+    private double flichTime;
     
     //Fireball attack
     private boolean firing = false;
@@ -31,63 +36,243 @@ public class Player extends Entity<PlayerState>{
     
     //Scratch attack
     private boolean scratching = false;
+    private int scratchDamage;
+    private int scratchRange;
     
     private boolean gliding = false;
+    private boolean isFacingRight = true;
+    
     private ResourceManager resourceMananger;
-    private PlayerState playerState = PlayerState.IDLE;
-    private BufferedImage testImage;
     
     public Player(TileMap tileMap, ResourceManager rm) {
         super(tileMap);
         this.resourceMananger = rm;
-        this.playerState = PlayerState.IDLE;
-        this.velocity = 0.3;
-        this.maxVelocity = 1.6;
+        this.velocity = 10;
+        this.maxVelocity = 20;
+        this.acceleration = 50;
+        this.deceleration = 30;
+        this.maxFallingSpeed = 40;
+        this.maxJumpVelocity = 20;
         loadAnimations();
-        this.animationMananger.setCurrentAnimation(PlayerState.GLIDING);
-        this.animationMananger.getCurrentAnimation().start(true);
-        this.testImage = this.resourceMananger.getImage(ImageIdentifier.PLAYER_SPRITE_SHEET);
+        this.animationMananger.setCurrentAnimation(PlayerAction.IDLE);
+        this.animationMananger.getCurrentAnimation().start(AnimationPlayMode.LOOP);
     }
        
     private void loadAnimations(){
         BufferedImage spriteSheet = this.resourceMananger.getImage(
                 ImageIdentifier.PLAYER_SPRITE_SHEET);
         this.animationMananger.addAnimation(
-                PlayerState.IDLE,
-                new Animation(spriteSheet, 0.25, PlayerState.IDLE.getFrames()));
+                PlayerAction.IDLE,
+                new Animation(spriteSheet
+                        , PlayerAction.IDLE.getSpeed()
+                        , PlayerAction.IDLE.getFrames()));
         this.animationMananger.addAnimation(
-                PlayerState.WALKING,
-                new Animation(spriteSheet, 0.25, PlayerState.WALKING.getFrames()));
+                PlayerAction.WALKING,
+                new Animation(spriteSheet
+                        , PlayerAction.WALKING.getSpeed()
+                        , PlayerAction.WALKING.getFrames()));
         this.animationMananger.addAnimation(
-                PlayerState.JUMPING,
-                new Animation(spriteSheet, 0.25, PlayerState.JUMPING.getFrames()));
+                PlayerAction.JUMPING,
+                new Animation(spriteSheet
+                        , PlayerAction.JUMPING.getSpeed()
+                        , PlayerAction.JUMPING.getFrames()));
         this.animationMananger.addAnimation(
-                PlayerState.FALLING,
-                new Animation(spriteSheet, 0.25, PlayerState.FALLING.getFrames()));
+                PlayerAction.FALLING,
+                new Animation(spriteSheet
+                        , PlayerAction.FALLING.getSpeed()
+                        , PlayerAction.FALLING.getFrames()));
         this.animationMananger.addAnimation(
-                PlayerState.GLIDING,
-                new Animation(spriteSheet, 0.25, PlayerState.GLIDING.getFrames()));
+                PlayerAction.GLIDING,
+                new Animation(spriteSheet
+                        , PlayerAction.GLIDING.getSpeed()
+                        , PlayerAction.GLIDING.getFrames()));
         this.animationMananger.addAnimation(
-                PlayerState.FIREBALLING,
-                new Animation(spriteSheet, 0.1, PlayerState.FIREBALLING.getFrames()));
+                PlayerAction.FIREBALLING,
+                new Animation(spriteSheet
+                        , PlayerAction.FIREBALLING.getSpeed()
+                        , PlayerAction.FIREBALLING.getFrames()));
         this.animationMananger.addAnimation(
-                PlayerState.SCRATCHING,
-                new Animation(spriteSheet, 0.1, PlayerState.SCRATCHING.getFrames()));
+                PlayerAction.SCRATCHING,
+                new Animation(spriteSheet
+                        , PlayerAction.SCRATCHING.getSpeed()
+                        , PlayerAction.SCRATCHING.getFrames()));
+    }
+    
+    public void setGliding(boolean gliding){
+        this.gliding = gliding;
+    }
+    
+    public void setFiring(){
+        this.firing = true;
+    }
+    
+    public void setScratching(){
+        this.scratching = true;
+    }
+    
+    private void accelerateLeft(double frameTime){
+        this.velX -= this.acceleration * frameTime;
+        if(this.velX < -this.maxVelocity){
+            this.velX = -this.maxVelocity;
+        }
+    }
+    
+    private void accelerateRight(double frameTime){
+        this.velX += this.acceleration * frameTime;
+        if(this.velX > this.maxVelocity){
+            this.velX = this.maxVelocity;
+        }
+    }
+    
+    private void decelerate(double frameTime){
+        if(this.velX > 0){
+            this.velX -= this.deceleration * frameTime;
+            if(this.velX < 0){
+                this.velX = 0;
+            }
+        } else if(this.velX < 0){
+            this.velX += this.deceleration * frameTime;
+            if(this.velX > 0){
+                this.velX = 0;
+            }
+        }
+    }
+    
+    private boolean isFalling(){
+        return !this.onGround && this.velY > 0;
+    }
+    
+    private boolean isJumping(){
+        return !this.onGround && this.velY < 0;
+    }
+    
+    private PlayerAction getCurrentAction(){
+        return this.animationMananger.getCurrentAnimationIdentifier();
     }
     
     public void update(KeyboardState keyboardState, double frameTime){
         this.animationMananger.update(frameTime);
+        if(keyboardState.isKeyPressed(KeyEvent.VK_LEFT)){
+            accelerateLeft(frameTime);
+        } else if(keyboardState.isKeyPressed(KeyEvent.VK_RIGHT)){
+            accelerateRight(frameTime);
+        } else {
+            decelerate(frameTime);            
+        }
+        
+        //Cannot move while attacking except in the air
+        if(!this.onGround && (getCurrentAction() == PlayerAction.FIREBALLING
+                || getCurrentAction() == PlayerAction.SCRATCHING)){
+            this.velX = 0;
+        }
+        
+        if(keyboardState.isKeyPressed(KeyEvent.VK_UP)){
+            if(this.onGround){
+                this.jumping = true;
+            }
+        } else if(keyboardState.isKeyPressed(KeyEvent.VK_DOWN)){
+        
+            
+        }
+        
+        
+        
+        /*if(this.playerState != PlayerAction.SCRATCHING
+                && this.playerState != PlayerAction.FIREBALLING){
+            
+        }*/
+        
+        updateAnimation();
+        
+        
+        /*if(this.flinching){
+            this.flichTime += frameTime;
+            if(this.flichTime >= FLINCH_PERIOD){
+                this.flichTime = 0;
+            }
+        }*/
     }
-
+    
+    private void updateAnimation(){
+        if(this.scratching){
+            if(getCurrentAction() != PlayerAction.SCRATCHING){
+                this.animationMananger
+                        .setCurrentAnimation(PlayerAction.SCRATCHING);
+                this.animationMananger
+                        .getCurrentAnimation().start(AnimationPlayMode.ONCE);
+            } else {
+                if(this.animationMananger.getCurrentAnimation()
+                        .hasBeenPlayedOnce()){
+                    this.animationMananger.setPreviousAnimation();
+                    this.animationMananger.getCurrentAnimation().start();
+                }
+            }
+        } else if(this.firing){
+            if(getCurrentAction() != PlayerAction.FIREBALLING){
+                this.animationMananger
+                        .setCurrentAnimation(PlayerAction.FIREBALLING);
+                this.animationMananger.getCurrentAnimation()
+                        .start(AnimationPlayMode.ONCE);
+            } else {
+                if(this.animationMananger.getCurrentAnimation()
+                        .hasBeenPlayedOnce()){
+                    this.animationMananger.setPreviousAnimation();
+                    this.animationMananger.getCurrentAnimation().start();
+                }
+            }
+        } else if(isFalling()){
+            if(this.gliding){
+                if(getCurrentAction() != PlayerAction.GLIDING){
+                    this.animationMananger
+                            .setCurrentAnimation(PlayerAction.GLIDING);
+                    this.animationMananger.getCurrentAnimation()
+                            .start(AnimationPlayMode.LOOP);
+                }
+            } else {
+                if(getCurrentAction() != PlayerAction.FALLING){
+                    this.animationMananger
+                            .setCurrentAnimation(PlayerAction.FALLING);
+                    this.animationMananger.getCurrentAnimation()
+                            .start(AnimationPlayMode.LOOP);
+                }
+            }
+        } else if(isJumping()){
+            if(getCurrentAction() != PlayerAction.JUMPING){
+                this.animationMananger
+                        .setCurrentAnimation(PlayerAction.JUMPING);
+                this.animationMananger.getCurrentAnimation()
+                        .start(AnimationPlayMode.LOOP);
+            }
+        } else if(this.movingLeft || this.movingRight){
+            if(getCurrentAction() != PlayerAction.WALKING){
+                this.animationMananger
+                        .setCurrentAnimation(PlayerAction.WALKING);
+                this.animationMananger.getCurrentAnimation()
+                        .start(AnimationPlayMode.LOOP);
+            }
+        } else {
+            if(getCurrentAction() != PlayerAction.IDLE){
+                this.animationMananger.setCurrentAnimation(PlayerAction.IDLE);
+                this.animationMananger.getCurrentAnimation()
+                        .start(AnimationPlayMode.LOOP);
+            }
+        }
+        
+        if(this.movingLeft){
+            this.animationMananger.setCurrentAnimationFacing(
+                    AnimationFacing.LEFT);
+        } else if(this.movingRight){
+            this.animationMananger.setCurrentAnimationFacing(
+                    AnimationFacing.RIGHT);
+        }
+    }
+    
     @Override
     public void draw(Graphics2D g) {
-        //System.out.println("mapx = " + this.tileMap.getX() + " mapy = " + this.tileMap.getY());
-        //System.out.println("playerAbsX = " + getAbsX() + " playerAbsY = " + getAbsY());
+        /*if(this.flinching){
+            
+        }*/
         this.animationMananger.draw(g, getAbsX(), getAbsY(), 2, 2);
-        //g.drawImage(testImage, getAbsX(), getAbsY(), null);
-        /*g.drawImage(testImage, getAbsX(), getAbsY(), getAbsX() + 50,
-                getAbsY() + 62, 0, 1, 25, 31, null);*/
-//        g.drawImage(testImage, getAbsX(), getAbsY(), 50, 60, 0, 1, 25, 30, null);
     }
 
     @Override

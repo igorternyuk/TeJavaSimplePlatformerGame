@@ -12,16 +12,28 @@ import java.util.Map;
 public class AnimationManager<Identifier> {
     private Map<Identifier, Animation> animations = new HashMap<>();
     private Identifier currentAnimation, prevAnimation;
+    private AnimationPlayMode prevAnimPlayMode;
     
     public void setCurrentAnimation(Identifier identifier){
         if(this.animations.containsKey(identifier)){
+            getCurrentAnimation().stop();
             this.currentAnimation = identifier;
             this.prevAnimation = identifier;
+            this.prevAnimPlayMode = getCurrentAnimation().getPlayMode();
         }
+    }
+    
+    public Identifier getCurrentAnimationIdentifier(){
+        return this.currentAnimation;
     }
     
     public void setPreviousAnimation(){
         this.currentAnimation = this.prevAnimation;
+        getCurrentAnimation().setPlayMode(this.prevAnimPlayMode);
+    }
+    
+    public void setCurrentAnimationFacing(AnimationFacing facing){
+        getCurrentAnimation().setFacing(facing);
     }
     
     public Animation getCurrentAnimation(){
@@ -48,7 +60,6 @@ public class AnimationManager<Identifier> {
         Animation currAnim = getCurrentAnimation();
         if(currAnim != null){
             currAnim.draw(g, destX, destY, scaleX, scaleY);
-        }
-        
+        }        
     }
 }

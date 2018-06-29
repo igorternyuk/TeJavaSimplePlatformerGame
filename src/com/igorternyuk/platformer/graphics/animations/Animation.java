@@ -18,9 +18,11 @@ public class Animation {
     private BufferedImage image;
     private List<Rectangle> frames;
     private List<Rectangle> flippedFrames;
-    private boolean isPlaying = false;
-    private boolean loopAnimation = true;
-    private boolean flipped = false;
+    private AnimationFacing facing = AnimationFacing.RIGHT;
+    private boolean playing = false;
+    private AnimationPlayMode playMode = AnimationPlayMode.LOOP;
+    private boolean playedOnce = false;
+    
     
     public Animation(BufferedImage image, double speed,
             int x, int y, int width, int height,
@@ -52,17 +54,33 @@ public class Animation {
                     this.flippedFrames.add(flippedFrame);
         });
     }
-
-    public boolean isFlipped() {
-        return flipped;
+    
+    public boolean isPlaying(){
+        return this.playing;
     }
 
-    public void setFlipped(boolean flipped) {
-        this.flipped = flipped;
+    public AnimationPlayMode getPlayMode() {
+        return playMode;
+    }
+
+    public void setPlayMode(AnimationPlayMode playMode) {
+        this.playMode = playMode;
+    }
+    
+    public boolean hasBeenPlayedOnce(){
+        return this.playedOnce;
+    }
+
+    public AnimationFacing getFacing() {
+        return this.facing;
+    }
+
+    public void setFacing(AnimationFacing facing) {
+        this.facing = facing;
     }
     
     public Rectangle getCurrentRect(){
-        return this.flipped
+        return this.facing == AnimationFacing.LEFT
                 ? this.flippedFrames.get(this.currentFrame)
                 : this.frames.get(this.currentFrame);
     }
@@ -75,29 +93,42 @@ public class Animation {
         return getCurrentRect().height;
     }
     
-    public void start(boolean loop){
-        this.isPlaying = true;
+    public void start(){
+        this.playing = true;
         this.currentFrame = 0;
         this.currentFrameTime = 0;
-        this.loopAnimation = loop;
+        if(this.playMode.equals(AnimationPlayMode.ONCE)){
+            this.playedOnce = false;
+        }
+    }
+    
+    public void start(AnimationPlayMode playMode){
+        this.playing = true;
+        this.currentFrame = 0;
+        this.currentFrameTime = 0;
+        this.playMode = playMode;
+        if(this.playMode.equals(AnimationPlayMode.ONCE)){
+            this.playedOnce = false;
+        }
     }
     
     public void stop(){
-        this.isPlaying = false;
+        this.playing = false;
         this.currentFrame = 0;
         this.currentFrameTime = 0;
     }
     
     public void update(double frameTime){
-        if(!this.isPlaying)
+        if(!this.playing)
             return;
         this.currentFrameTime += frameTime;
         if(this.currentFrameTime >= speed){
             ++this.currentFrame;
             if(this.currentFrame >= this.frames.size()){
                 this.currentFrame = 0;
-                if(!this.loopAnimation){
-                    this.isPlaying = false;
+                if(this.playMode.equals(AnimationPlayMode.ONCE)){
+                    this.playing = false;
+                    this.playedOnce = true;
                 }
             }
             this.currentFrameTime = 0;
@@ -115,7 +146,6 @@ public class Animation {
                 , currentRect.x, currentRect.y
                 , currentRect.x + currentRect.width
                 , currentRect.y + currentRect.height
-                , null);
-        
+                , null);        
     }
 }
