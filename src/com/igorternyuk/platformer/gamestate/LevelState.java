@@ -14,6 +14,7 @@ import com.igorternyuk.platformer.resourcemanager.ResourceManager;
  * @author igor
  */
 public class LevelState extends GameState{
+    public static final double SCALE = 2;
     private TileMap tileMap;
     private Background background;
     private Player player;
@@ -31,17 +32,33 @@ public class LevelState extends GameState{
         this.tileMap = new TileMap(this.resourceManager, Game.TILE_SIZE);
         this.tileMap.loadTileSet("/Tilesets/grasstileset.gif");
         this.tileMap.loadMap("/Maps/level1.map");
-        this.tileMap.setPosition(0, 0);
         this.resourceManager.loadImage(ImageIdentifier.PLAYER_SPRITE_SHEET,
                 "/Sprites/Player/playerSpriteSheet.png");
         this.player = new Player(this.tileMap, this.resourceManager);
-        this.player.setPosition(2 * 30, 6 * 30);
+        
+        this.player.setPosition(2 * this.tileMap.getTileSize(),
+                6 * this.tileMap.getTileSize());
     }
 
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
         if(this.player != null){
             this.player.update(keyboardState, frameTime);
+        }
+        if(this.tileMap != null && this.player != null){
+            /*System.out.println("this.player.getX() = " + this.player.getX());
+            System.out.println("this.tileMap.getWidth() = " + this.tileMap.getWidth());
+            System.out.println("his.tileMap.getWidth() - this.player.getX() = " + (this.tileMap.getWidth() - this.player.getX()));*/
+            if(this.player.getX() > Game.WIDTH / 2 / SCALE
+               && this.tileMap.getWidth() - this.player.getX() > Game.WIDTH / 2 / SCALE){
+                this.tileMap.setCameraPositionX(this.player.getX() - Game.WIDTH / 2 / SCALE);
+            }
+            
+            if(this.player.getY() > Game.HEIGHT / 2 / SCALE
+               && this.tileMap.getHeight() - this.player.getY() > Game.HEIGHT / 2 / SCALE){
+                this.tileMap.setCameraPositionY(this.player.getY() - Game.HEIGHT / 2 / SCALE);
+            }
+            
         }
     }
 

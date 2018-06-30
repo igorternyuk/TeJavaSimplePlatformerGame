@@ -17,9 +17,9 @@ import java.util.logging.Logger;
  * @author igor
  */
 public class TileMap {
+    private static final double SCROLL_SPEED = 0.1;
     private static final int SCALE = 2;
-    private double x, y;
-    private int xmin, xmax, ymin, ymax;
+    private double cameraX, cameraY;
     
     private int[][] map;
     private int tileSize;
@@ -39,14 +39,16 @@ public class TileMap {
         this.resourceManager = resourceManager;
         this.numColsToDraw = Game.WIDTH / this.tileSize;
         this.numRowsToDraw = Game.HEIGHT / this.tileSize;
+        this.cameraX = 0;
+        this.cameraY = 0;
     }
 
-    public int getX() {
-        return (int)this.x;
+    public int getCameraX() {
+        return (int)this.cameraX;
     }
 
-    public int getY() {
-        return (int)this.y;
+    public int getCameraY() {
+        return (int)this.cameraY;
     }
 
     public int getTileSize() {
@@ -62,35 +64,28 @@ public class TileMap {
     }
     
     public TileType getTileType(int row, int col){
-        int val = this.map[row][col];
-        int r = val / this.numTilesX;
-        int c = val % this.numTilesX;
-        return this.tiles[r][c].getType();
+        if(row >= 0 && row < this.map.length
+            && col >= 0 && col < this.map[row].length){
+            int val = this.map[row][col];
+            int r = val / this.numTilesX;
+            int c = val % this.numTilesX;
+            return this.tiles[r][c].getType();
+        } else {
+            return TileType.BLOCKED;
+        }        
     }
     
-    
-    
-    public void setPosition(double x, double y){
-        this.x += (x - this.x) * 0.1;
-        this.y += (y - this.y) * 0.1;
-        fixBounds();
-        
-        this.colOffset = (int)-this.x / this.tileSize;
-        this.rowOffset = (int)-this.y / this.tileSize;
-        
-        System.out.println("this.rowOffset = " + this.rowOffset);
-        System.out.println("this.colOffset = " + this.colOffset);
-
+     public void setCameraPositionX(double x){
+        this.cameraX += (x - this.cameraX) * SCROLL_SPEED;        
+        this.colOffset = (int)(this.cameraX / this.tileSize);
+        //System.out.println("this.colOffset = " + this.colOffset);
     }
     
-    public void fixBounds(){
-        if(this.x < this.xmin) this.x = this.xmin;
-        if(this.x > this.xmax) this.x = this.xmax;
-        if(this.y < this.ymin) this.y = this.ymin;
-        if(this.y > this.ymax) this.y = this.ymax;
+    public void setCameraPositionY(double y){
+        this.cameraY += (y - this.cameraY) * SCROLL_SPEED;        
+        this.rowOffset = (int)(this.cameraY / this.tileSize);
+        //System.out.println("this.colOffset = " + this.colOffset);
     }
-    
-    
     
     public void loadMap(String pathToMapFile){
         InputStream in = this.getClass().getResourceAsStream(pathToMapFile);
@@ -161,8 +156,8 @@ public class TileMap {
                 int r = val / this.numTilesX;
                 int c = val % this.numTilesX;
                 BufferedImage image = this.tiles[r][c].getImage();
-                g.drawImage(image, (int)x + col * SCALE * this.tileSize,
-                        (int)y + row * SCALE * this.tileSize,
+                g.drawImage(image, SCALE * (col * this.tileSize - (int)cameraX),
+                        SCALE * (row * this.tileSize - (int)cameraY),
                         SCALE * this.tileSize, SCALE * this.tileSize, null);
             }
         }

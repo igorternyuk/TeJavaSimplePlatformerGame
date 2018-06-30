@@ -13,7 +13,7 @@ import java.awt.Graphics2D;
  * @param <AnimationIdentifier> Animation identifier
  */
 public abstract class Entity<AnimationIdentifier> {
-    public static final double GRAVITY = 0.5;
+    public static final double GRAVITY = 1;
     
     //Tile stuff
     protected TileMap tileMap;
@@ -46,6 +46,14 @@ public abstract class Entity<AnimationIdentifier> {
         this.animationMananger = new AnimationManager<>();
     }
     
+    public int getX(){
+        return (int)this.x;
+    }
+    
+    public int getY(){
+        return (int)this.y;
+    }
+    
     public int top(){
         return (int)this.y;
     }
@@ -63,19 +71,19 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     public int getMapX(){
-        return this.tileMap.getX();
+        return this.tileMap.getCameraX();
     }
     
     public int getMapY(){
-        return this.tileMap.getY();
+        return this.tileMap.getCameraY();
     }
     
     public int getAbsX(){
-        return getMapX() + (int)this.x;
+        return (int)this.x - getMapX();
     }
     
     public int getAbsY(){
-        return getMapY() + (int)this.y;
+        return (int)this.y - getMapY();
     }
     
     public int getAbsTop(){
@@ -120,7 +128,7 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     protected boolean isFalling(){
-        return !this.onGround && this.velY > 0;
+        return !this.onGround && this.velY > GRAVITY;
     }
     
     protected boolean isLifting(){
@@ -154,11 +162,6 @@ public abstract class Entity<AnimationIdentifier> {
         this.jumping = jumping;
     }
     
-    public void moveHorizontally(double frameTime){
-        this.x += this.velX * frameTime;
-        handleMapCollision(false);
-    }
-    
     public void accelerateDown(double frameTime){
         this.velY += GRAVITY * frameTime;
         if(this.velY > this.maxFallingSpeed){
@@ -166,13 +169,24 @@ public abstract class Entity<AnimationIdentifier> {
         }
     }
     
+    public void moveHorizontally(double frameTime){
+        this.x += this.velX * frameTime;
+        handleMapCollision(false);
+    }
+    
     public void moveVertically(double frameTime){
         if(!this.onGround){
             accelerateDown(frameTime);
-            this.y += this.velY;            
-            this.onGround = false;
-            handleMapCollision(true);
         }
+        /*The player should constantly try to fall in order to determine
+        if it is on the ground*/
+        this.y += this.velY;
+        if(this.y < 0){
+            this.y = 0;
+            this.velY = GRAVITY;
+        }
+        this.onGround = false;
+        handleMapCollision(true);
     }
     
     public boolean collides(Entity other){
@@ -183,27 +197,27 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     public void handleMapCollision(boolean isVerticalMovement){
-        //System.out.println("Collision checking for vertical movement");
-        /*System.out.println("this.top()  = " + this.top());
-        System.out.println("this.bottom() = " + this.bottom());
-        System.out.println("this.left() = " + this.left());
-        System.out.println("this.right()  = " + this.right());
-        System.out.println("this.top() / this.tileSize = " + (this.top() / this.tileSize));
-        System.out.println("this.bottom() / this.tileSize = " + (this.bottom() / this.tileSize));
-        System.out.println("this.left() / this.tileSize = " + (this.left() / this.tileSize));
-        System.out.println("this.right() / this.tileSize = " + (this.right() / this.tileSize));*/
         outer:
-        for(int row = this.top() / this.tileSize; row <= (this.bottom() - 1) / this.tileSize; ++row){
-            for(int col = this.left() / this.tileSize; col <= (this.right() - 1) / this.tileSize; ++col){
+        for(int row = this.top() / this.tileSize;
+            row <= (this.bottom() - 1) / this.tileSize; 
+            ++row){
+            for(int col = this.left() / this.tileSize;
+                col <= (this.right() - 1) / this.tileSize;
+                ++col){
                 if(this.tileMap.getTileType(row, col).equals(TileType.BLOCKED)){
-                    if(isVerticalMovement){                        
+                    if(isVerticalMovement){
+                        this.onGround = false;
                         if(this.velY < 0){
+                            System.out.println("We've touched the ceiling");
+                            System.out.println("this.y = " + this.y);
+                            System.out.println("row = " + row + " col = " + col);
                             this.y = row * this.tileSize + this.tileSize;
+                            this.velY = GRAVITY;
+                            
                         } else if(this.velY > 0){
                             this.y = row * this.tileSize - this.tileSize;
                             this.onGround = true;
                             this.velY = 0;
-                            
                         }
                     } else {
                         if(this.velX > 0){
@@ -212,7 +226,8 @@ public abstract class Entity<AnimationIdentifier> {
                             this.x = col * this.tileSize + this.tileSize;
                         }
                     }
-                    break outer;
+                    //If we've got a collision we can terminate the further checking
+                    //break outer;
                 }
             }
         }

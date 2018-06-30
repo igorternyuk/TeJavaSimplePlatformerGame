@@ -3,6 +3,7 @@ package com.igorternyuk.platformer.gameplay.entities.player;
 import com.igorternyuk.platformer.gameplay.entities.Entity;
 import com.igorternyuk.platformer.gameplay.entities.weapon.FireBall;
 import com.igorternyuk.platformer.gameplay.tilemap.TileMap;
+import com.igorternyuk.platformer.gamestate.LevelState;
 import com.igorternyuk.platformer.graphics.animations.Animation;
 import com.igorternyuk.platformer.graphics.animations.AnimationFacing;
 import com.igorternyuk.platformer.graphics.animations.AnimationPlayMode;
@@ -52,8 +53,8 @@ public class Player extends Entity<PlayerAction>{
         this.horizontalDeceleration = 40;
         this.maxFallingSpeed = 40;
         this.jumpVelocityInitial = -1;
-        this.maxJumpVelocity = -5;
-        this.verticalAcceleration = -0.2;
+        this.maxJumpVelocity = -9;
+        this.verticalAcceleration = -1.5;
         this.onGround = true;
         loadAnimations();
         this.animationMananger.setCurrentAnimation(PlayerAction.IDLE);
@@ -181,6 +182,7 @@ public class Player extends Entity<PlayerAction>{
                 || keyboardState.isKeyPressed(KeyEvent.VK_W)){
             if(this.onGround){
                 this.jumping = true;
+                System.out.println("Trying to jump");
             }
         } else {
             this.jumping = false;
@@ -198,22 +200,21 @@ public class Player extends Entity<PlayerAction>{
         this.scratching = keyboardState.isKeyPressed(KeyEvent.VK_R);
         
         if(this.jumping){
+            System.out.println("We are jumping");
             if(this.onGround){
+                System.out.println("We are on the ground");
                 this.velY = this.jumpVelocityInitial;
                 this.onGround = false;
             } else {
                 this.velY += this.verticalAcceleration * frameTime;
             }
         }
-       
         
         //Movement
         moveHorizontally(frameTime);
         moveVertically(frameTime);
         
         updateAnimation();
-        
-        
         /*if(this.flinching){
             this.flichTime += frameTime;
             if(this.flichTime >= FLINCH_PERIOD){
@@ -271,6 +272,7 @@ public class Player extends Entity<PlayerAction>{
                         .start(AnimationPlayMode.LOOP);
             }
         } else if(this.movingLeft || this.movingRight){
+            //System.out.println("Setting WALKING");
             if(getCurrentAction() != PlayerAction.WALKING){
                 this.animationMananger
                         .setCurrentAnimation(PlayerAction.WALKING);
@@ -278,6 +280,7 @@ public class Player extends Entity<PlayerAction>{
                         .start(AnimationPlayMode.LOOP);
             }
         } else {
+            //System.out.println("Setting IDLE");
             if(getCurrentAction() != PlayerAction.IDLE){
                 this.animationMananger.setCurrentAnimation(PlayerAction.IDLE);
                 this.animationMananger.getCurrentAnimation()
@@ -297,9 +300,8 @@ public class Player extends Entity<PlayerAction>{
         /*if(this.flinching){
             
         }*/
-        if(isOnTheScreen()){
-            this.animationMananger.draw(g, getAbsX(), getAbsY(), 2, 2);
-        }
+        this.animationMananger.draw(g, getAbsX(), getAbsY(),
+                    LevelState.SCALE, LevelState.SCALE);
     }
 
     @Override

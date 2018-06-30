@@ -141,7 +141,7 @@ public class Animation {
         int dx1 = (int)(destX * scaleX);
         int dy1 = (int)(destY * scaleY);
         int dx2 = dx1 + (int)(Math.abs(currentRect.width) * scaleX);
-        int dy2 = dy1 + (int)(currentRect.height * scaleY);
+        int dy2 = dy1 + (int)(Math.abs(currentRect.height) * scaleY);
         g.drawImage(this.image, dx1, dy1, dx2, dy2
                 , currentRect.x, currentRect.y
                 , currentRect.x + currentRect.width
