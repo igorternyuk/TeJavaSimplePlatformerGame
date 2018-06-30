@@ -48,11 +48,14 @@ public class Player extends Entity<PlayerAction>{
         super(tileMap);
         this.resourceMananger = rm;
         this.velocity = 10;
-        this.maxVelocity = 20;
-        this.acceleration = 50;
-        this.deceleration = 30;
+        this.maxVelocity = 30;
+        this.horizontalAcceleration = 60;
+        this.horizontalDeceleration = 30;
         this.maxFallingSpeed = 40;
-        this.maxJumpVelocity = 20;
+        this.jumpVelocityInitial = -1;
+        this.maxJumpVelocity = -5;
+        this.verticalAcceleration = -0.2;
+        this.onGround = true;
         loadAnimations();
         this.animationMananger.setCurrentAnimation(PlayerAction.IDLE);
         this.animationMananger.getCurrentAnimation().start(AnimationPlayMode.LOOP);
@@ -111,14 +114,14 @@ public class Player extends Entity<PlayerAction>{
     }
     
     private void accelerateLeft(double frameTime){
-        this.velX -= this.acceleration * frameTime;
+        this.velX -= this.horizontalAcceleration * frameTime;
         if(this.velX < -this.maxVelocity){
             this.velX = -this.maxVelocity;
         }
     }
     
     private void accelerateRight(double frameTime){
-        this.velX += this.acceleration * frameTime;
+        this.velX += this.horizontalAcceleration * frameTime;
         if(this.velX > this.maxVelocity){
             this.velX = this.maxVelocity;
         }
@@ -126,41 +129,49 @@ public class Player extends Entity<PlayerAction>{
     
     private void decelerate(double frameTime){
         if(this.velX > 0){
-            this.velX -= this.deceleration * frameTime;
+            this.velX -= this.horizontalDeceleration * frameTime;
             if(this.velX < 0){
                 this.velX = 0;
             }
         } else if(this.velX < 0){
-            this.velX += this.deceleration * frameTime;
+            this.velX += this.horizontalDeceleration * frameTime;
             if(this.velX > 0){
                 this.velX = 0;
             }
         }
     }
     
-    private boolean isFalling(){
-        return !this.onGround && this.velY > 0;
-    }
-    
-    private boolean isJumping(){
-        return !this.onGround && this.velY < 0;
-    }
-    
+   
     private PlayerAction getCurrentAction(){
         return this.animationMananger.getCurrentAnimationIdentifier();
     }
     
-    public void update(KeyboardState keyboardState, double frameTime){
+    @Override
+    public void accelerateDown(double frameTime){
+        if(!this.onGround){
+            if(this.gliding){
+                this.velY += FACTOR_OF_AIR_RESISTANCE * GRAVITY * frameTime;
+            } else {
+                this.velY += GRAVITY * frameTime;
+            }
+        }        
+    }
+    
+    @Override
+    public void update(KeyboardState keyboardState, double frameTime) {
         this.animationMananger.update(frameTime);
+        resetMoving();
         if(keyboardState.isKeyPressed(KeyEvent.VK_LEFT)){
             accelerateLeft(frameTime);
+            this.movingLeft = true;
         } else if(keyboardState.isKeyPressed(KeyEvent.VK_RIGHT)){
             accelerateRight(frameTime);
+            this.movingRight = true;
         } else {
             decelerate(frameTime);            
         }
         
-        //Cannot move while attacking except in the air
+        //Cannot moveHorizontally while attacking except in the air
         if(!this.onGround && (getCurrentAction() == PlayerAction.FIREBALLING
                 || getCurrentAction() == PlayerAction.SCRATCHING)){
             this.velX = 0;
@@ -170,17 +181,26 @@ public class Player extends Entity<PlayerAction>{
             if(this.onGround){
                 this.jumping = true;
             }
-        } else if(keyboardState.isKeyPressed(KeyEvent.VK_DOWN)){
-        
-            
+        } else {
+            this.jumping = false;
         }
         
+        this.firing = keyboardState.isKeyPressed(KeyEvent.VK_F);
+        this.scratching = keyboardState.isKeyPressed(KeyEvent.VK_R);
         
+        if(this.jumping){
+            if(this.onGround){
+                this.velY = this.jumpVelocityInitial;
+                this.onGround = false;
+            } else {
+                this.velY += this.verticalAcceleration * frameTime;
+            }
+        }
+       
         
-        /*if(this.playerState != PlayerAction.SCRATCHING
-                && this.playerState != PlayerAction.FIREBALLING){
-            
-        }*/
+        //Movement
+        moveHorizontally(frameTime);
+        moveVertically(frameTime);
         
         updateAnimation();
         
@@ -192,7 +212,7 @@ public class Player extends Entity<PlayerAction>{
             }
         }*/
     }
-    
+
     private void updateAnimation(){
         if(this.scratching){
             if(getCurrentAction() != PlayerAction.SCRATCHING){
@@ -203,8 +223,7 @@ public class Player extends Entity<PlayerAction>{
             } else {
                 if(this.animationMananger.getCurrentAnimation()
                         .hasBeenPlayedOnce()){
-                    this.animationMananger.setPreviousAnimation();
-                    this.animationMananger.getCurrentAnimation().start();
+                    this.animationMananger.getCurrentAnimation().stop();
                 }
             }
         } else if(this.firing){
@@ -216,8 +235,7 @@ public class Player extends Entity<PlayerAction>{
             } else {
                 if(this.animationMananger.getCurrentAnimation()
                         .hasBeenPlayedOnce()){
-                    this.animationMananger.setPreviousAnimation();
-                    this.animationMananger.getCurrentAnimation().start();
+                    this.animationMananger.getCurrentAnimation().stop();
                 }
             }
         } else if(isFalling()){
@@ -236,7 +254,7 @@ public class Player extends Entity<PlayerAction>{
                             .start(AnimationPlayMode.LOOP);
                 }
             }
-        } else if(isJumping()){
+        } else if(isLifting()){
             if(getCurrentAction() != PlayerAction.JUMPING){
                 this.animationMananger
                         .setCurrentAnimation(PlayerAction.JUMPING);
@@ -259,11 +277,9 @@ public class Player extends Entity<PlayerAction>{
         }
         
         if(this.movingLeft){
-            this.animationMananger.setCurrentAnimationFacing(
-                    AnimationFacing.LEFT);
+            this.animationMananger.setAnimationsFacing(AnimationFacing.LEFT);
         } else if(this.movingRight){
-            this.animationMananger.setCurrentAnimationFacing(
-                    AnimationFacing.RIGHT);
+            this.animationMananger.setAnimationsFacing(AnimationFacing.RIGHT);
         }
     }
     
@@ -279,5 +295,7 @@ public class Player extends Entity<PlayerAction>{
     public boolean isAlive() {
         return this.health > 0;
     }
+
+    
     
 }

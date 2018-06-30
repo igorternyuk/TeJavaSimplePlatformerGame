@@ -3,6 +3,7 @@ package com.igorternyuk.platformer.graphics.animations;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -16,7 +17,10 @@ public class AnimationManager<Identifier> {
     
     public void setCurrentAnimation(Identifier identifier){
         if(this.animations.containsKey(identifier)){
-            getCurrentAnimation().stop();
+            Animation currAnim = getCurrentAnimation();
+            if(currAnim != null){
+                currAnim.stop();
+            }
             this.currentAnimation = identifier;
             this.prevAnimation = identifier;
             this.prevAnimPlayMode = getCurrentAnimation().getPlayMode();
@@ -34,6 +38,12 @@ public class AnimationManager<Identifier> {
     
     public void setCurrentAnimationFacing(AnimationFacing facing){
         getCurrentAnimation().setFacing(facing);
+    }
+    
+    public void setAnimationsFacing(AnimationFacing facing){
+        this.animations.entrySet().forEach((a) -> {
+            a.getValue().setFacing(facing);
+        });
     }
     
     public Animation getCurrentAnimation(){

@@ -14,16 +14,17 @@
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/animations/AnimationManager.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/MenuState.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/input/KeyboardState.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/animations/AnimationFacing.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/Display.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/utils/Painter.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/Entity.java</file>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/player/PlayerState.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/GameStateManager.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/tilemap/Tile.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/enemies/Spider.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/animations/AnimationPlayMode.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/main/Main.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/Game.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/player/PlayerAction.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/resourcemanager/MapIdentifier.java</file>
         </group>
     </open-files>

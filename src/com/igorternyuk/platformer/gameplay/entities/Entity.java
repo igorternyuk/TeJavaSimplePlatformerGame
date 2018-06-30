@@ -13,6 +13,8 @@ import java.awt.Graphics2D;
  * @param <AnimationIdentifier> Animation identifier
  */
 public abstract class Entity<AnimationIdentifier> {
+    public static final double GRAVITY = 0.5;
+    
     //Tile stuff
     protected TileMap tileMap;
     protected int tileSize;
@@ -25,12 +27,11 @@ public abstract class Entity<AnimationIdentifier> {
     //Physics
     protected double velX, velY;
     protected double velocity, maxVelocity;
-    protected double acceleration;
-    protected double deceleration;
+    protected double horizontalAcceleration;
+    protected double horizontalDeceleration;
     protected double jumpVelocityInitial, maxJumpVelocity;
     protected double verticalAcceleration;
     protected double fallingSpeed, maxFallingSpeed;
-    protected double gravity;
     protected boolean movingRight = false;
     protected boolean movingLeft = false;
     protected boolean movingUp = false;
@@ -119,6 +120,14 @@ public abstract class Entity<AnimationIdentifier> {
         return this.velY;
     }
     
+    protected boolean isFalling(){
+        return !this.onGround && this.velY > 0;
+    }
+    
+    protected boolean isLifting(){
+        return !this.onGround && this.velY < 0;
+    }
+    
     public void setPosition(double x, double y){
         this.x = x;
         this.y = y;
@@ -156,18 +165,27 @@ public abstract class Entity<AnimationIdentifier> {
         this.jumping = jumping;
     }
     
-    public void update(KeyboardState keyboardState, float frameTime){
+    public void moveHorizontally(double frameTime){
         this.x += this.velX * frameTime;
         handleMapCollision(false);
+    }
+    
+    public void accelerateDown(double frameTime){
+        this.velY += GRAVITY * frameTime;
+    }
+    
+    public void moveVertically(double frameTime){
         if(!this.onGround){
-            this.velY += gravity * frameTime;
+            accelerateDown(frameTime);
             this.y += this.velY;
+            if(this.velY > this.maxFallingSpeed){
+                this.velY = this.maxFallingSpeed;
+            }
             this.onGround = false;
             handleMapCollision(true);
         }
-        //this.velX = 0;
     }
-        
+    
     public boolean collides(Entity other){
         return !(this.right() < other.left()
                 || this.left() > other.right()
@@ -200,5 +218,6 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     public abstract boolean isAlive();
+    public abstract void update(KeyboardState keyboardState, double frameTime);
     public abstract void draw(Graphics2D g);
 }
