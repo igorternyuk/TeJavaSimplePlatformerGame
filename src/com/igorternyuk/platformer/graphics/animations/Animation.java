@@ -86,11 +86,11 @@ public class Animation {
     }
     
     public int getCurrentFrameWidth(){
-        return getCurrentRect().width;
+        return Math.abs(getCurrentRect().width);
     }
     
     public int getCurrentFrameHeight(){
-        return getCurrentRect().height;
+        return Math.abs(getCurrentRect().height);
     }
     
     public void start(){

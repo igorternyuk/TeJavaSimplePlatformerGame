@@ -3,7 +3,6 @@ package com.igorternyuk.platformer.graphics.animations;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  *

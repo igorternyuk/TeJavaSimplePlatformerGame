@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class Player extends Entity<PlayerAction>{
     private static final double FLINCH_PERIOD = 0.1;
     private static final double FACTOR_OF_AIR_RESISTANCE = 0.1;
+    
     private int health;
     private int maxHealth;
     private int fire;
@@ -40,17 +41,15 @@ public class Player extends Entity<PlayerAction>{
     private int scratchRange;
     
     private boolean gliding = false;
-    private boolean isFacingRight = true;
     
     private ResourceManager resourceMananger;
     
     public Player(TileMap tileMap, ResourceManager rm) {
         super(tileMap);
         this.resourceMananger = rm;
-        this.velocity = 10;
-        this.maxVelocity = 30;
-        this.horizontalAcceleration = 60;
-        this.horizontalDeceleration = 30;
+        this.maxVelocity = 60;
+        this.horizontalAcceleration = 70;
+        this.horizontalDeceleration = 40;
         this.maxFallingSpeed = 40;
         this.jumpVelocityInitial = -1;
         this.maxJumpVelocity = -5;
@@ -140,7 +139,6 @@ public class Player extends Entity<PlayerAction>{
             }
         }
     }
-    
    
     private PlayerAction getCurrentAction(){
         return this.animationMananger.getCurrentAnimationIdentifier();
@@ -161,10 +159,12 @@ public class Player extends Entity<PlayerAction>{
     public void update(KeyboardState keyboardState, double frameTime) {
         this.animationMananger.update(frameTime);
         resetMoving();
-        if(keyboardState.isKeyPressed(KeyEvent.VK_LEFT)){
+        if(keyboardState.isKeyPressed(KeyEvent.VK_LEFT)
+                || keyboardState.isKeyPressed(KeyEvent.VK_A)){
             accelerateLeft(frameTime);
             this.movingLeft = true;
-        } else if(keyboardState.isKeyPressed(KeyEvent.VK_RIGHT)){
+        } else if(keyboardState.isKeyPressed(KeyEvent.VK_RIGHT)
+                || keyboardState.isKeyPressed(KeyEvent.VK_D)){
             accelerateRight(frameTime);
             this.movingRight = true;
         } else {
@@ -177,12 +177,21 @@ public class Player extends Entity<PlayerAction>{
             this.velX = 0;
         }
         
-        if(keyboardState.isKeyPressed(KeyEvent.VK_UP)){
+        if(keyboardState.isKeyPressed(KeyEvent.VK_UP)
+                || keyboardState.isKeyPressed(KeyEvent.VK_W)){
             if(this.onGround){
                 this.jumping = true;
             }
         } else {
             this.jumping = false;
+        }
+        
+        if(keyboardState.isKeyPressed(KeyEvent.VK_E)){
+            if(isFalling()){
+                this.gliding = true;
+            }
+        } else {
+            this.gliding = false;
         }
         
         this.firing = keyboardState.isKeyPressed(KeyEvent.VK_F);
@@ -288,7 +297,9 @@ public class Player extends Entity<PlayerAction>{
         /*if(this.flinching){
             
         }*/
-        this.animationMananger.draw(g, getAbsX(), getAbsY(), 2, 2);
+        if(isOnTheScreen()){
+            this.animationMananger.draw(g, getAbsX(), getAbsY(), 2, 2);
+        }
     }
 
     @Override

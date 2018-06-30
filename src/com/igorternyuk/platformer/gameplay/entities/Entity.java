@@ -22,20 +22,17 @@ public abstract class Entity<AnimationIdentifier> {
     //Geometry
     
     protected double x, y;
-    protected int width, height;
     
     //Physics
     protected double velX, velY;
-    protected double velocity, maxVelocity;
+    protected double maxVelocity;
     protected double horizontalAcceleration;
     protected double horizontalDeceleration;
     protected double jumpVelocityInitial, maxJumpVelocity;
     protected double verticalAcceleration;
-    protected double fallingSpeed, maxFallingSpeed;
+    protected double maxFallingSpeed;
     protected boolean movingRight = false;
     protected boolean movingLeft = false;
-    protected boolean movingUp = false;
-    protected boolean movingDown = false;
     protected boolean jumping = false;
     protected boolean onGround = false;
     
@@ -105,11 +102,13 @@ public abstract class Entity<AnimationIdentifier> {
     }
 
     public int getWidth() {
-        return this.animationMananger.getCurrentAnimation().getCurrentFrameWidth();
+        return this.animationMananger.getCurrentAnimation()
+                .getCurrentFrameWidth();
     }
 
     public int getHeight() {
-        return this.animationMananger.getCurrentAnimation().getCurrentFrameHeight();
+        return this.animationMananger.getCurrentAnimation()
+                .getCurrentFrameHeight();
     }
 
     public double getVelX() {
@@ -146,17 +145,7 @@ public abstract class Entity<AnimationIdentifier> {
         this.movingLeft = movingLeft;
     }
 
-    public void setMovingUp(boolean movingUp) {
-        this.movingUp = movingUp;
-    }
-
-    public void setMovingDown(boolean movingDown) {
-        this.movingDown = movingDown;
-    }
-    
     public void resetMoving(){
-        this.movingDown = false;
-        this.movingUp = false;
         this.movingLeft = false;
         this.movingRight = false;
     }
@@ -172,15 +161,15 @@ public abstract class Entity<AnimationIdentifier> {
     
     public void accelerateDown(double frameTime){
         this.velY += GRAVITY * frameTime;
+        if(this.velY > this.maxFallingSpeed){
+            this.velY = this.maxFallingSpeed;
+        }
     }
     
     public void moveVertically(double frameTime){
         if(!this.onGround){
             accelerateDown(frameTime);
-            this.y += this.velY;
-            if(this.velY > this.maxFallingSpeed){
-                this.velY = this.maxFallingSpeed;
-            }
+            this.y += this.velY;            
             this.onGround = false;
             handleMapCollision(true);
         }
@@ -194,16 +183,27 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     public void handleMapCollision(boolean isVerticalMovement){
-        for(int row = this.top() / this.tileSize; row < this.bottom() / this.tileSize; ++row){
-            for(int col = this.left(); col < this.right() / this.tileSize; ++col){
+        //System.out.println("Collision checking for vertical movement");
+        /*System.out.println("this.top()  = " + this.top());
+        System.out.println("this.bottom() = " + this.bottom());
+        System.out.println("this.left() = " + this.left());
+        System.out.println("this.right()  = " + this.right());
+        System.out.println("this.top() / this.tileSize = " + (this.top() / this.tileSize));
+        System.out.println("this.bottom() / this.tileSize = " + (this.bottom() / this.tileSize));
+        System.out.println("this.left() / this.tileSize = " + (this.left() / this.tileSize));
+        System.out.println("this.right() / this.tileSize = " + (this.right() / this.tileSize));*/
+        outer:
+        for(int row = this.top() / this.tileSize; row <= (this.bottom() - 1) / this.tileSize; ++row){
+            for(int col = this.left() / this.tileSize; col <= (this.right() - 1) / this.tileSize; ++col){
                 if(this.tileMap.getTileType(row, col).equals(TileType.BLOCKED)){
-                    if(isVerticalMovement){
+                    if(isVerticalMovement){                        
                         if(this.velY < 0){
                             this.y = row * this.tileSize + this.tileSize;
                         } else if(this.velY > 0){
                             this.y = row * this.tileSize - this.tileSize;
                             this.onGround = true;
                             this.velY = 0;
+                            
                         }
                     } else {
                         if(this.velX > 0){
@@ -212,6 +212,7 @@ public abstract class Entity<AnimationIdentifier> {
                             this.x = col * this.tileSize + this.tileSize;
                         }
                     }
+                    break outer;
                 }
             }
         }
