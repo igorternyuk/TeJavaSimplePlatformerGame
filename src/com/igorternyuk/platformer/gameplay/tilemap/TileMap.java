@@ -1,6 +1,7 @@
 package com.igorternyuk.platformer.gameplay.tilemap;
 
 import com.igorternyuk.platformer.gameplay.Game;
+import com.igorternyuk.platformer.gamestate.LevelState;
 import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 import java.awt.Graphics2D;
@@ -18,7 +19,6 @@ import java.util.logging.Logger;
  */
 public class TileMap {
     private static final double SCROLL_SPEED = 0.1;
-    private static final int SCALE = 2;
     private double cameraX, cameraY;
     
     private int[][] map;
@@ -63,9 +63,13 @@ public class TileMap {
         return this.height;
     }
     
+    private boolean isValidCoordinates(int row, int col){
+        return row >= 0 && row < this.map.length
+            && col >= 0 && col < this.map[row].length;
+    }
+    
     public TileType getTileType(int row, int col){
-        if(row >= 0 && row < this.map.length
-            && col >= 0 && col < this.map[row].length){
+        if(isValidCoordinates(row, col)){
             int val = this.map[row][col];
             int r = val / this.numTilesX;
             int c = val % this.numTilesX;
@@ -78,13 +82,11 @@ public class TileMap {
      public void setCameraPositionX(double x){
         this.cameraX += (x - this.cameraX) * SCROLL_SPEED;        
         this.colOffset = (int)(this.cameraX / this.tileSize);
-        //System.out.println("this.colOffset = " + this.colOffset);
     }
     
     public void setCameraPositionY(double y){
         this.cameraY += (y - this.cameraY) * SCROLL_SPEED;        
         this.rowOffset = (int)(this.cameraY / this.tileSize);
-        //System.out.println("this.colOffset = " + this.colOffset);
     }
     
     public void loadMap(String pathToMapFile){
@@ -156,9 +158,11 @@ public class TileMap {
                 int r = val / this.numTilesX;
                 int c = val % this.numTilesX;
                 BufferedImage image = this.tiles[r][c].getImage();
-                g.drawImage(image, SCALE * (col * this.tileSize - (int)cameraX),
-                        SCALE * (row * this.tileSize - (int)cameraY),
-                        SCALE * this.tileSize, SCALE * this.tileSize, null);
+                g.drawImage(image
+                    , (int)LevelState.SCALE * (col * this.tileSize - (int)cameraX)
+                    , (int)LevelState.SCALE * (row * this.tileSize - (int)cameraY)
+                    , (int)LevelState.SCALE * this.tileSize
+                    , (int)LevelState.SCALE * this.tileSize, null);
             }
         }
     }

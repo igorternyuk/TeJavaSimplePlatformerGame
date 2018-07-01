@@ -22,7 +22,7 @@ import java.util.ArrayList;
  */
 public class Player extends Entity<PlayerAction>{
     private static final double FLINCH_PERIOD = 0.1;
-    private static final double FACTOR_OF_AIR_RESISTANCE = 0.1;
+    private static final double FACTOR_OF_AIR_RESISTANCE = 0.001;
     
     private int health;
     private int maxHealth;
@@ -33,11 +33,13 @@ public class Player extends Entity<PlayerAction>{
     
     //Fireball attack
     private boolean firing = false;
+    private boolean canFire = true;
     private int fireCost;
     private List<FireBall> fireBalls = new ArrayList<>();
     
     //Scratch attack
     private boolean scratching = false;
+    private boolean canScratch = true;
     private int scratchDamage;
     private int scratchRange;
     
@@ -48,13 +50,13 @@ public class Player extends Entity<PlayerAction>{
     public Player(TileMap tileMap, ResourceManager rm) {
         super(tileMap);
         this.resourceMananger = rm;
-        this.maxVelocity = 60;
+        this.maxVelocity = 120;
         this.horizontalAcceleration = 70;
         this.horizontalDeceleration = 40;
         this.maxFallingSpeed = 40;
-        this.jumpVelocityInitial = -1;
+        this.jumpVelocityInitial = -3;
         this.maxJumpVelocity = -9;
-        this.verticalAcceleration = -1.5;
+        this.verticalAcceleration = -0.75;
         this.onGround = true;
         loadAnimations();
         this.animationMananger.setCurrentAnimation(PlayerAction.IDLE);
@@ -112,19 +114,38 @@ public class Player extends Entity<PlayerAction>{
     public void setScratching(){
         this.scratching = true;
     }
+
+    public void setCanFire(boolean canFire) {
+        this.canFire = canFire;
+    }
+
+    public void setCanScratch(boolean canScratch) {
+        this.canScratch = canScratch;
+    }
     
-    private void accelerateLeft(double frameTime){
+    protected void accelerateLeft(double frameTime){
         this.velX -= this.horizontalAcceleration * frameTime;
         if(this.velX < -this.maxVelocity){
             this.velX = -this.maxVelocity;
         }
     }
     
-    private void accelerateRight(double frameTime){
+    protected void accelerateRight(double frameTime){
         this.velX += this.horizontalAcceleration * frameTime;
         if(this.velX > this.maxVelocity){
             this.velX = this.maxVelocity;
         }
+    }
+    
+    @Override
+    public void accelerateDown(double frameTime){
+        if(!this.onGround){
+            if(this.gliding){
+                this.velY += FACTOR_OF_AIR_RESISTANCE * GRAVITY * frameTime;
+            } else {
+                this.velY += GRAVITY * frameTime;
+            }
+        }        
     }
     
     private void decelerate(double frameTime){
@@ -146,17 +167,6 @@ public class Player extends Entity<PlayerAction>{
     }
     
     @Override
-    public void accelerateDown(double frameTime){
-        if(!this.onGround){
-            if(this.gliding){
-                this.velY += FACTOR_OF_AIR_RESISTANCE * GRAVITY * frameTime;
-            } else {
-                this.velY += GRAVITY * frameTime;
-            }
-        }        
-    }
-    
-    @Override
     public void update(KeyboardState keyboardState, double frameTime) {
         this.animationMananger.update(frameTime);
         resetMoving();
@@ -172,6 +182,14 @@ public class Player extends Entity<PlayerAction>{
             decelerate(frameTime);            
         }
         
+        if(this.canFire){
+            this.firing = keyboardState.isKeyPressed(KeyEvent.VK_F);
+        }
+        
+        if(this.canScratch){
+            this.scratching = keyboardState.isKeyPressed(KeyEvent.VK_R);
+        }
+        
         //Cannot moveHorizontally while attacking except in the air
         if(!this.onGround && (getCurrentAction() == PlayerAction.FIREBALLING
                 || getCurrentAction() == PlayerAction.SCRATCHING)){
@@ -180,12 +198,7 @@ public class Player extends Entity<PlayerAction>{
         
         if(keyboardState.isKeyPressed(KeyEvent.VK_UP)
                 || keyboardState.isKeyPressed(KeyEvent.VK_W)){
-            if(this.onGround){
-                this.jumping = true;
-                System.out.println("Trying to jump");
-            }
-        } else {
-            this.jumping = false;
+            this.jumping = this.onGround;
         }
         
         if(keyboardState.isKeyPressed(KeyEvent.VK_E)){
@@ -196,13 +209,8 @@ public class Player extends Entity<PlayerAction>{
             this.gliding = false;
         }
         
-        this.firing = keyboardState.isKeyPressed(KeyEvent.VK_F);
-        this.scratching = keyboardState.isKeyPressed(KeyEvent.VK_R);
-        
         if(this.jumping){
-            System.out.println("We are jumping");
             if(this.onGround){
-                System.out.println("We are on the ground");
                 this.velY = this.jumpVelocityInitial;
                 this.onGround = false;
             } else {
@@ -234,6 +242,9 @@ public class Player extends Entity<PlayerAction>{
                 if(this.animationMananger.getCurrentAnimation()
                         .hasBeenPlayedOnce()){
                     this.animationMananger.getCurrentAnimation().stop();
+                    this.scratching = false;
+                    this.canScratch = false;
+                    setIdleAnimation();
                 }
             }
         } else if(this.firing){
@@ -246,6 +257,9 @@ public class Player extends Entity<PlayerAction>{
                 if(this.animationMananger.getCurrentAnimation()
                         .hasBeenPlayedOnce()){
                     this.animationMananger.getCurrentAnimation().stop();
+                    this.firing = false;
+                    this.canFire = false;
+                    setIdleAnimation();
                 }
             }
         } else if(isFalling()){
@@ -280,14 +294,23 @@ public class Player extends Entity<PlayerAction>{
                         .start(AnimationPlayMode.LOOP);
             }
         } else {
-            //System.out.println("Setting IDLE");
-            if(getCurrentAction() != PlayerAction.IDLE){
-                this.animationMananger.setCurrentAnimation(PlayerAction.IDLE);
-                this.animationMananger.getCurrentAnimation()
-                        .start(AnimationPlayMode.LOOP);
-            }
+            setIdleAnimation();
         }
         
+        setCorrectSnimationFacing();
+        
+        //System.out.println("playerX = " + this.x + " playerY = " + this.y);
+    }
+    
+    private void setIdleAnimation(){
+        if(getCurrentAction() != PlayerAction.IDLE){
+            this.animationMananger.setCurrentAnimation(PlayerAction.IDLE);
+            this.animationMananger.getCurrentAnimation()
+                    .start(AnimationPlayMode.LOOP);
+        }
+    }
+    
+    private void setCorrectSnimationFacing(){
         if(this.movingLeft){
             this.animationMananger.setAnimationsFacing(AnimationFacing.LEFT);
         } else if(this.movingRight){

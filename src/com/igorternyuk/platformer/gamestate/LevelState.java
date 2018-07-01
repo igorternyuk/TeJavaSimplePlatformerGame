@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import com.igorternyuk.platformer.input.KeyboardState;
 import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
+import java.awt.event.KeyEvent;
 
 /**
  *
@@ -15,6 +16,8 @@ import com.igorternyuk.platformer.resourcemanager.ResourceManager;
  */
 public class LevelState extends GameState{
     public static final double SCALE = 2;
+    private static final int SCREEN_HALF_WIDTH = (int)(Game.WIDTH / 2 / SCALE);
+    private static final int SCREEN_HALF_HEIGHT = (int)(Game.HEIGHT / 2 / SCALE);
     private TileMap tileMap;
     private Background background;
     private Player player;
@@ -44,21 +47,24 @@ public class LevelState extends GameState{
     public void update(KeyboardState keyboardState, double frameTime) {
         if(this.player != null){
             this.player.update(keyboardState, frameTime);
+            scrollTileMapCamera();
         }
-        if(this.tileMap != null && this.player != null){
-            /*System.out.println("this.player.getX() = " + this.player.getX());
-            System.out.println("this.tileMap.getWidth() = " + this.tileMap.getWidth());
-            System.out.println("his.tileMap.getWidth() - this.player.getX() = " + (this.tileMap.getWidth() - this.player.getX()));*/
-            if(this.player.getX() > Game.WIDTH / 2 / SCALE
-               && this.tileMap.getWidth() - this.player.getX() > Game.WIDTH / 2 / SCALE){
-                this.tileMap.setCameraPositionX(this.player.getX() - Game.WIDTH / 2 / SCALE);
+        
+    }
+    
+    private void scrollTileMapCamera(){
+        if(this.tileMap != null){
+            if(this.player.getX() > SCREEN_HALF_WIDTH
+               && this.tileMap.getWidth() - this.player.getX() > SCREEN_HALF_WIDTH){
+                int dx = this.player.getX() - SCREEN_HALF_WIDTH;
+                this.tileMap.setCameraPositionX(dx);
             }
             
-            if(this.player.getY() > Game.HEIGHT / 2 / SCALE
-               && this.tileMap.getHeight() - this.player.getY() > Game.HEIGHT / 2 / SCALE){
-                this.tileMap.setCameraPositionY(this.player.getY() - Game.HEIGHT / 2 / SCALE);
-            }
-            
+            if(this.player.getY() > SCREEN_HALF_HEIGHT
+               && this.tileMap.getHeight() - this.player.getY() > SCREEN_HALF_HEIGHT){
+                int dy = this.player.getY() - SCREEN_HALF_HEIGHT;
+                this.tileMap.setCameraPositionY(dy);
+            }            
         }
     }
 
@@ -68,6 +74,11 @@ public class LevelState extends GameState{
 
     @Override
     public void onKeyReleased(int keyCode) {
+        if(keyCode == KeyEvent.VK_F){
+            this.player.setCanFire(true);
+        } else if(keyCode == KeyEvent.VK_R){
+            this.player.setCanScratch(true);
+        }
     }
 
     @Override

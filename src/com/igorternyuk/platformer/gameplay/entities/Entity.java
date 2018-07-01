@@ -13,7 +13,7 @@ import java.awt.Graphics2D;
  * @param <AnimationIdentifier> Animation identifier
  */
 public abstract class Entity<AnimationIdentifier> {
-    public static final double GRAVITY = 1;
+    public static final double GRAVITY = 0.7;
     
     //Tile stuff
     protected TileMap tileMap;
@@ -205,29 +205,35 @@ public abstract class Entity<AnimationIdentifier> {
                 col <= (this.right() - 1) / this.tileSize;
                 ++col){
                 if(this.tileMap.getTileType(row, col).equals(TileType.BLOCKED)){
+                    
                     if(isVerticalMovement){
-                        this.onGround = false;
+                        //this.onGround = false;
                         if(this.velY < 0){
+                            System.out.println("CEILING COLLISION");
                             System.out.println("We've touched the ceiling");
                             System.out.println("this.y = " + this.y);
                             System.out.println("row = " + row + " col = " + col);
-                            this.y = row * this.tileSize + this.tileSize;
+                            this.y = row * this.tileSize + this.tileSize + 1;
                             this.velY = GRAVITY;
                             
                         } else if(this.velY > 0){
+                            //System.out.println("BOTTOM COLLISION");
                             this.y = row * this.tileSize - this.tileSize;
                             this.onGround = true;
                             this.velY = 0;
                         }
                     } else {
                         if(this.velX > 0){
-                            this.x = col * this.tileSize - this.tileSize;
+                            this.x = col * this.tileSize - this.tileSize - 2;
+                            System.out.println("RIGHT COLLISION");
                         } else if(this.velX < 0){
-                            this.x = col * this.tileSize + this.tileSize;
+                            this.x = col * this.tileSize + this.tileSize + 2;
+                            System.out.println("LEFT COLLISION");
                         }
+                        this.velX = 0;
                     }
                     //If we've got a collision we can terminate the further checking
-                    //break outer;
+                    break outer;
                 }
             }
         }
