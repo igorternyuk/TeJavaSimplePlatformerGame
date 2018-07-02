@@ -57,6 +57,7 @@ public class Player extends Entity<PlayerAction>{
         this.jumpVelocityInitial = -3;
         this.maxJumpVelocity = -9;
         this.verticalAcceleration = -0.75;
+        this.gravity = 0.7;
         this.onGround = true;
         loadAnimations();
         this.animationMananger.setCurrentAnimation(PlayerAction.IDLE);
@@ -141,9 +142,9 @@ public class Player extends Entity<PlayerAction>{
     public void accelerateDown(double frameTime){
         if(!this.onGround){
             if(this.gliding){
-                this.velY += FACTOR_OF_AIR_RESISTANCE * GRAVITY * frameTime;
+                this.velY += FACTOR_OF_AIR_RESISTANCE * gravity * frameTime;
             } else {
-                this.velY += GRAVITY * frameTime;
+                this.velY += gravity * frameTime;
             }
         }        
     }
@@ -331,7 +332,4 @@ public class Player extends Entity<PlayerAction>{
     public boolean isAlive() {
         return this.health > 0;
     }
-
-    
-    
 }

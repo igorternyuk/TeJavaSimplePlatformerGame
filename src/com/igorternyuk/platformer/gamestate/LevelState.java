@@ -26,21 +26,42 @@ public class LevelState extends GameState{
     }
 
     @Override
-    public void init() {
-        System.out.println("Level state initialization...");
-        this.resourceManager.loadImage(ImageIdentifier.PLAY_BACKGROUND,
+    public void load() {
+        System.out.println("Level state loading...");
+        this.resourceManager.loadImage(ImageIdentifier.LEVEL_BACKGROUND,
                 "/Backgrounds/grassbg1.gif");
         this.background = new Background(this.resourceManager
-                .getImage(ImageIdentifier.PLAY_BACKGROUND));
+                .getImage(ImageIdentifier.LEVEL_BACKGROUND));
         this.tileMap = new TileMap(this.resourceManager, Game.TILE_SIZE);
         this.tileMap.loadTileSet("/Tilesets/grasstileset.gif");
         this.tileMap.loadMap("/Maps/level1.map");
         this.resourceManager.loadImage(ImageIdentifier.PLAYER_SPRITE_SHEET,
                 "/Sprites/Player/playerSpriteSheet.png");
+        this.resourceManager.loadImage(ImageIdentifier.FIRE_BALL,
+                "/Sprites/Player/fireball.gif");
+        this.resourceManager.loadImage(ImageIdentifier.SNAIL,
+                "/Sprites/Enemies/snail.gif");
+        this.resourceManager.loadImage(ImageIdentifier.SPIDER,
+                "/Sprites/Enemies/spider.gif");
+        this.resourceManager.loadImage(ImageIdentifier.EXPLOSION,
+                "/Sprites/Enemies/explosion.gif");
         this.player = new Player(this.tileMap, this.resourceManager);
         
         this.player.setPosition(2 * this.tileMap.getTileSize(),
                 6 * this.tileMap.getTileSize());
+    }
+    
+    
+    @Override
+    public void unload() {
+        this.player = null;
+        this.resourceManager.unloadImage(ImageIdentifier.EXPLOSION);
+        this.resourceManager.unloadImage(ImageIdentifier.SPIDER);
+        this.resourceManager.unloadImage(ImageIdentifier.SNAIL);
+        this.resourceManager.unloadImage(ImageIdentifier.FIRE_BALL);
+        this.resourceManager.unloadImage(ImageIdentifier.PLAYER_SPRITE_SHEET);
+        this.resourceManager.unloadImage(ImageIdentifier.LEVEL_BACKGROUND);
+        this.tileMap = null;
     }
 
     @Override
@@ -56,13 +77,13 @@ public class LevelState extends GameState{
         if(this.tileMap != null){
             if(this.player.getX() > SCREEN_HALF_WIDTH
                && this.tileMap.getWidth() - this.player.getX() > SCREEN_HALF_WIDTH){
-                int dx = this.player.getX() - SCREEN_HALF_WIDTH;
+                int dx = (int)this.player.getX() - SCREEN_HALF_WIDTH;
                 this.tileMap.setCameraPositionX(dx);
             }
             
             if(this.player.getY() > SCREEN_HALF_HEIGHT
                && this.tileMap.getHeight() - this.player.getY() > SCREEN_HALF_HEIGHT){
-                int dy = this.player.getY() - SCREEN_HALF_HEIGHT;
+                int dy = (int)this.player.getY() - SCREEN_HALF_HEIGHT;
                 this.tileMap.setCameraPositionY(dy);
             }            
         }
@@ -95,5 +116,5 @@ public class LevelState extends GameState{
             this.player.draw(g);
         }
     }
-    
+
 }

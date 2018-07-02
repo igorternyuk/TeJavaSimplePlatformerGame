@@ -13,7 +13,6 @@ import java.awt.Graphics2D;
  * @param <AnimationIdentifier> Animation identifier
  */
 public abstract class Entity<AnimationIdentifier> {
-    public static final double GRAVITY = 0.7;
     
     //Tile stuff
     protected TileMap tileMap;
@@ -30,6 +29,7 @@ public abstract class Entity<AnimationIdentifier> {
     protected double horizontalDeceleration;
     protected double jumpVelocityInitial, maxJumpVelocity;
     protected double verticalAcceleration;
+    protected double gravity;
     protected double maxFallingSpeed;
     protected boolean movingRight = false;
     protected boolean movingLeft = false;
@@ -46,12 +46,12 @@ public abstract class Entity<AnimationIdentifier> {
         this.animationMananger = new AnimationManager<>();
     }
     
-    public int getX(){
-        return (int)this.x;
+    public double getX(){
+        return this.x;
     }
     
-    public int getY(){
-        return (int)this.y;
+    public double getY(){
+        return this.y;
     }
     
     public int top(){
@@ -128,7 +128,7 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     protected boolean isFalling(){
-        return !this.onGround && this.velY > GRAVITY;
+        return !this.onGround && this.velY > gravity;
     }
     
     protected boolean isLifting(){
@@ -163,7 +163,7 @@ public abstract class Entity<AnimationIdentifier> {
     }
     
     public void accelerateDown(double frameTime){
-        this.velY += GRAVITY * frameTime;
+        this.velY += gravity * frameTime;
         if(this.velY > this.maxFallingSpeed){
             this.velY = this.maxFallingSpeed;
         }
@@ -183,7 +183,7 @@ public abstract class Entity<AnimationIdentifier> {
         this.y += this.velY;
         if(this.y < 0){
             this.y = 0;
-            this.velY = GRAVITY;
+            this.velY = gravity;
         }
         this.onGround = false;
         handleMapCollision(true);
@@ -214,7 +214,7 @@ public abstract class Entity<AnimationIdentifier> {
                             System.out.println("this.y = " + this.y);
                             System.out.println("row = " + row + " col = " + col);
                             this.y = row * this.tileSize + this.tileSize + 1;
-                            this.velY = GRAVITY;
+                            this.velY = gravity;
                             
                         } else if(this.velY > 0){
                             //System.out.println("BOTTOM COLLISION");

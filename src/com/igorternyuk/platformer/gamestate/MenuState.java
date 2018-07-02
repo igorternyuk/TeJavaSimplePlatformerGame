@@ -28,14 +28,25 @@ public class MenuState extends GameState{
 
     public MenuState(GameStateManager gsm, ResourceManager rm) {
         super(gsm, rm);
-        this.background = new Background(rm.getImage(ImageIdentifier.MENU_BACKGROUND));
-        this.background.setPosition(0, 0);
-        this.background.setSpeed(0.1, 0);
-        this.options = new String[]{"Play", "Help", "Quit"};
+        this.options = new String[]{"Play", "Quit"};
     }
 
     @Override
-    public void init() {
+    public void load() {
+        System.out.println("Menu state loading...");
+        if(!this.resourceManager.loadImage(ImageIdentifier.MENU_BACKGROUND,
+                "/Backgrounds/menubg.gif")){
+            System.out.println("Could not load background image");
+        }
+        this.background = new Background(
+                this.resourceManager.getImage(ImageIdentifier.MENU_BACKGROUND));
+        this.background.setPosition(0, 0);
+        this.background.setSpeed(0.1, 0);
+    }
+    
+    @Override
+    public void unload() {
+        this.resourceManager.unloadImage(ImageIdentifier.MENU_BACKGROUND);
     }
 
     @Override
@@ -54,11 +65,9 @@ public class MenuState extends GameState{
     private void select(int index){
         switch(index){
             case 0:
-                this.gameStateManager.setCurrentState(GameStateManager.LEVEL_STATE);
+                this.gameStateManager.nextState();
                 break;
-            case 1:
-                break;
-            case 2:
+            default:
                 this.gameStateManager.getGame().onWindowCloseRequest();
                 break;
         }
@@ -99,4 +108,6 @@ public class MenuState extends GameState{
                 color, Game.HEIGHT / 3 + (i + 1) * Game.HEIGHT / 12);
         }
     }    
+
+    
 }

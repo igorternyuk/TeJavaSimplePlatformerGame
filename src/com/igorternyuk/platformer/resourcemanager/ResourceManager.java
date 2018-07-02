@@ -39,4 +39,8 @@ public class ResourceManager {
     public BufferedImage getImage(ImageIdentifier identifier){
         return this.images.get(identifier);
     }
+    
+    public void unloadImage(ImageIdentifier identifier){
+        this.images.remove(identifier);
+    }
 }

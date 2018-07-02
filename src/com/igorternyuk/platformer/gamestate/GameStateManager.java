@@ -6,50 +6,56 @@ import java.util.ArrayList;
 import java.util.List;
 import com.igorternyuk.platformer.input.KeyboardState;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
+import java.util.Stack;
 
 /**
  *
  * @author igor
  */
 public class GameStateManager {
-    public static final int MENU_STATE = 0;
-    public static final int LEVEL_STATE = 1;
     private Game game;
-    private ResourceManager resourceManger;
-    private List<GameState> gameStates;
-    private int currentState;
+    private Stack<GameState> gameStates;
     
     public GameStateManager(Game game, ResourceManager rm){
         this.game = game;
-        this.gameStates = new ArrayList<>();
-        this.resourceManger = rm;
-        this.gameStates.add(new MenuState(this, rm));
-        this.gameStates.add(new LevelState(this, rm));
-        this.currentState = MENU_STATE;
+        this.gameStates = new Stack<>();
+        this.gameStates.push(new LevelState(this, rm));
+        this.gameStates.push(new MenuState(this, rm));
+        this.gameStates.peek().load();
     }
     
     public Game getGame(){
         return this.game;
     }
     
-    public void setCurrentState(int index){
-        this.currentState = index;
-        this.gameStates.get(index).init();
+    public void nextState(){
+        if(this.gameStates.size() >= 2){
+            GameState currentState = this.gameStates.pop();
+            currentState.unload();
+            this.gameStates.peek().load();
+        }
     }
     
-    public void update(KeyboardState keyboardState, double frameTime){
-        this.gameStates.get(currentState).update(keyboardState, frameTime);
+    public void unloadAllGameStates(){
+        while(!this.gameStates.empty()){
+            GameState currentState = this.gameStates.pop();
+            currentState.unload(); 
+        }
     }
     
     public void onKeyPressed(int keyCode){
-        this.gameStates.get(currentState).onKeyPressed(keyCode);
+        this.gameStates.peek().onKeyPressed(keyCode);
     }
     
     public void onKeyReleased(int keyCode){
-        this.gameStates.get(currentState).onKeyReleased(keyCode);
+        this.gameStates.peek().onKeyReleased(keyCode);
+    }
+    
+    public void update(KeyboardState keyboardState, double frameTime){
+        this.gameStates.peek().update(keyboardState, frameTime);
     }
     
     public void draw(Graphics2D g){
-        this.gameStates.get(currentState).draw(g);
+        this.gameStates.peek().draw(g);
     }
 }

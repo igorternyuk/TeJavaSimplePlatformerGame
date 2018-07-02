@@ -6,7 +6,11 @@ package com.igorternyuk.platformer.resourcemanager;
  */
 public enum ImageIdentifier {
     MENU_BACKGROUND,
-    PLAY_BACKGROUND,
+    LEVEL_BACKGROUND,
     TILE_SET,
-    PLAYER_SPRITE_SHEET;
+    PLAYER_SPRITE_SHEET,
+    FIRE_BALL,
+    SNAIL,
+    SPIDER,
+    EXPLOSION
 }

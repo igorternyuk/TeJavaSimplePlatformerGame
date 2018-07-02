@@ -63,7 +63,6 @@ public class Game implements Runnable {
             }
         });
         this.resourceManager = new ResourceManager(); //TODO Should be singleton
-        loadImages();
         this.gameStateManager = new GameStateManager(this, this.resourceManager);
     }
     
@@ -98,12 +97,6 @@ public class Game implements Runnable {
         cleanUp();
     }
     
-    private void loadImages(){
-        if(!this.resourceManager.loadImage(ImageIdentifier.MENU_BACKGROUND,
-                "/Backgrounds/menubg.gif")){
-            System.out.println("Could not load background image");
-        }
-    }
     
     public void update(){
         this.gameStateManager.update(this.keyboardState, FRAME_TIME_IN_SECONDS);
@@ -167,6 +160,7 @@ public class Game implements Runnable {
     }
     
     public void cleanUp(){
+        this.gameStateManager.unloadAllGameStates();
         this.display.destroy();
     }
 }
