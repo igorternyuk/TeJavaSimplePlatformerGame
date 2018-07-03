@@ -10,41 +10,42 @@ import javax.swing.KeyStroke;
  *
  * @author igor
  */
-public class KeyboardState extends JComponent{
+public class KeyboardState extends JComponent {
+
     private boolean[] keyMap;
-    
-    public KeyboardState(){
+
+    public KeyboardState() {
         this.keyMap = new boolean[256];
-        for(int i = 0; i < this.keyMap.length; ++i){
+        for (int i = 0; i < this.keyMap.length; ++i) {
             final int keyCode = i;
-            
+
             this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                     .put(KeyStroke.getKeyStroke(keyCode, 0, false), 2 * i);
-            this.getActionMap().put(2 * i, new AbstractAction(){
+            this.getActionMap().put(2 * i, new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     keyMap[keyCode] = true;
                 }
-            
+
             });
-            
+
             this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                     .put(KeyStroke.getKeyStroke(keyCode, 0, true), 2 * i + 1);
-            this.getActionMap().put(2 * i + 1, new AbstractAction(){
+            this.getActionMap().put(2 * i + 1, new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     keyMap[keyCode] = false;
                 }
-            
+
             });
         }
     }
-    
-    public boolean[] getMap(){
+
+    public boolean[] getMap() {
         return Arrays.copyOf(keyMap, keyMap.length);
     }
-    
-    public boolean isKeyPressed(int keyCode){
+
+    public boolean isKeyPressed(int keyCode) {
         return this.keyMap[keyCode];
     }
 }

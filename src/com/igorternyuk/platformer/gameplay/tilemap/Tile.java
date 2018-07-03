@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
  * @author igor
  */
 public class Tile {
+
     private BufferedImage image;
     private TileType type;
 
@@ -22,5 +23,5 @@ public class Tile {
     public TileType getType() {
         return this.type;
     }
-    
+
 }

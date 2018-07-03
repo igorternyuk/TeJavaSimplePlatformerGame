@@ -37,7 +37,7 @@ public class Display {
         this.canvas.setPreferredSize(new Dimension(width, height));
         this.canvas.setFocusable(true);
         this.canvas.requestFocus();
-        
+
         this.window.setResizable(false);
         this.window.getContentPane().add(this.canvas);
         this.window.pack();
@@ -84,7 +84,7 @@ public class Display {
 
     public void swapBuffers() {
         Graphics g = this.bufferStrategy.getDrawGraphics();
-        g.drawImage(this.bufferImage, 0, 0,  null);
+        g.drawImage(this.bufferImage, 0, 0, null);
         this.bufferStrategy.show();
     }
 
@@ -100,12 +100,12 @@ public class Display {
     public void addInputListener(KeyboardState keyboardState) {
         this.window.add(keyboardState);
     }
-    
-    public void addKeyListener(KeyListener listener){
+
+    public void addKeyListener(KeyListener listener) {
         this.canvas.addKeyListener(listener);
     }
-    
-    public void addWindowListener(WindowListener listener){
+
+    public void addWindowListener(WindowListener listener) {
         this.window.addWindowListener(listener);
     }
 }

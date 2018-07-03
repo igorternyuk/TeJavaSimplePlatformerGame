@@ -10,14 +10,15 @@ import java.util.Map;
  * @param <Identifier> Animation identifier
  */
 public class AnimationManager<Identifier> {
+
     private Map<Identifier, Animation> animations = new HashMap<>();
     private Identifier currentAnimation, prevAnimation;
     private AnimationPlayMode prevAnimPlayMode;
-    
-    public void setCurrentAnimation(Identifier identifier){
-        if(this.animations.containsKey(identifier)){
+
+    public void setCurrentAnimation(Identifier identifier) {
+        if (this.animations.containsKey(identifier)) {
             Animation currAnim = getCurrentAnimation();
-            if(currAnim != null){
+            if (currAnim != null) {
                 currAnim.stop();
             }
             this.currentAnimation = identifier;
@@ -25,50 +26,50 @@ public class AnimationManager<Identifier> {
             this.prevAnimPlayMode = getCurrentAnimation().getPlayMode();
         }
     }
-    
-    public Identifier getCurrentAnimationIdentifier(){
+
+    public Identifier getCurrentAnimationIdentifier() {
         return this.currentAnimation;
     }
-    
-    public void setPreviousAnimation(){
+
+    public void setPreviousAnimation() {
         this.currentAnimation = this.prevAnimation;
         getCurrentAnimation().setPlayMode(this.prevAnimPlayMode);
     }
-    
-    public void setCurrentAnimationFacing(AnimationFacing facing){
+
+    public void setCurrentAnimationFacing(AnimationFacing facing) {
         getCurrentAnimation().setFacing(facing);
     }
-    
-    public void setAnimationsFacing(AnimationFacing facing){
+
+    public void setAnimationsFacing(AnimationFacing facing) {
         this.animations.entrySet().forEach((a) -> {
             a.getValue().setFacing(facing);
         });
     }
-    
-    public Animation getCurrentAnimation(){
+
+    public Animation getCurrentAnimation() {
         return this.animations.get(this.currentAnimation);
     }
-    
-    public void addAnimation(Identifier identifier, Animation animation){
+
+    public void addAnimation(Identifier identifier, Animation animation) {
         this.animations.put(identifier, animation);
     }
-    
-    public void removeAnimation(Identifier identifier){
+
+    public void removeAnimation(Identifier identifier) {
         this.animations.remove(identifier);
     }
-    
-    public void update(double frameTime){
+
+    public void update(double frameTime) {
         Animation currAnim = getCurrentAnimation();
-        if(currAnim != null){
+        if (currAnim != null) {
             currAnim.update(frameTime);
         }
     }
-    
+
     public void draw(Graphics2D g, int destX, int destY, double scaleX,
-            double scaleY){
+            double scaleY) {
         Animation currAnim = getCurrentAnimation();
-        if(currAnim != null){
+        if (currAnim != null) {
             currAnim.draw(g, destX, destY, scaleX, scaleY);
-        }        
+        }
     }
 }

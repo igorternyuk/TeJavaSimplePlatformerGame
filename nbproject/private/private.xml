@@ -4,12 +4,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/animations/Animation.java</file>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/weapon/FireBallState.java</file>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/resources/Sprites/Player/fireball.gif</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/GameState.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/enemies/Snail.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/weapon/FireBall.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/tilemap/TileMap.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/player/Player.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/LevelState.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/MenuState.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/input/KeyboardState.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/Display.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/Entity.java</file>
@@ -17,6 +18,8 @@
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/main/Main.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/Game.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/player/PlayerAction.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/weapon/FireBallAction.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/resourcemanager/ResourceManager.java</file>
         </group>
     </open-files>
 </project-private>

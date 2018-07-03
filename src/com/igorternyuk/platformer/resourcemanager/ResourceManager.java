@@ -13,13 +13,14 @@ import javax.imageio.ImageIO;
  * @author igor
  */
 public class ResourceManager {
+
     private Map<ImageIdentifier, BufferedImage> images;
-    
-    public ResourceManager(){
+
+    public ResourceManager() {
         this.images = new HashMap<>();
     }
-    
-    public boolean loadImage(ImageIdentifier identifier, String pathToImage){
+
+    public boolean loadImage(ImageIdentifier identifier, String pathToImage) {
         BufferedImage image = null;
         try {
             image = ImageIO.read(
@@ -28,19 +29,19 @@ public class ResourceManager {
             Logger.getLogger(ResourceManager.class.getName()).log(Level.SEVERE,
                     null, ex);
         }
-        if(image != null){
+        if (image != null) {
             this.images.put(identifier, image);
             return true;
         } else {
             return false;
         }
     }
-    
-    public BufferedImage getImage(ImageIdentifier identifier){
+
+    public BufferedImage getImage(ImageIdentifier identifier) {
         return this.images.get(identifier);
     }
-    
-    public void unloadImage(ImageIdentifier identifier){
+
+    public void unloadImage(ImageIdentifier identifier) {
         this.images.remove(identifier);
     }
 }
