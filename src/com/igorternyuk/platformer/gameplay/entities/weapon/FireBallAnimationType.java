@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author igor
  */
-public enum FireBallAnimation {
+public enum FireBallAnimationType {
     FLYING(7, 7, 15, 15, 4, 30, 0.1),
     DESTROYING(6, 34, 20, 20, 3, 30, 0.5);
 
@@ -16,8 +16,8 @@ public enum FireBallAnimation {
 
     private double animationSpeed;
 
-    private FireBallAnimation(int firstFrameX, int firstFrameY, int frameWidth,
-            int frameHeight, int frameCount, int frameStep,
+    private FireBallAnimationType(int firstFrameX, int firstFrameY,
+            int frameWidth, int frameHeight, int frameCount, int frameStep,
             double animationSpeed) {
         for (int i = 0; i < frameCount; ++i) {
             Rectangle rect = new Rectangle(

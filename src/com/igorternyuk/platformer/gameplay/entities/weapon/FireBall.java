@@ -20,14 +20,14 @@ public class FireBall extends Entity {
 
     private boolean alive = true;
     private boolean hit = false;
-    private AnimationManager<FireBallAnimation> animationMananger =
+    private AnimationManager<FireBallAnimationType> animationMananger =
             new AnimationManager<>();
 
     public FireBall(LevelState level, Player player) {
         super(level);
         setPhysics(player);
         loadAnimations();
-        this.animationMananger.setCurrentAnimation(FireBallAnimation.FLYING);
+        this.animationMananger.setCurrentAnimation(FireBallAnimationType.FLYING);
         this.animationMananger.getCurrentAnimation().start(
                 AnimationPlayMode.LOOP);
     }
@@ -52,7 +52,7 @@ public class FireBall extends Entity {
     private void loadAnimations() {
         BufferedImage spriteSheet = this.level.getResourceManager().getImage(
                 ImageIdentifier.FIRE_BALL);
-        for (FireBallAnimation animation : FireBallAnimation.values()) {
+        for (FireBallAnimationType animation : FireBallAnimationType.values()) {
             this.animationMananger.addAnimation(animation,
                     new Animation(spriteSheet, animation.getAnimationSpeed(),
                             animation.getFrames()));
@@ -92,9 +92,9 @@ public class FireBall extends Entity {
     public void update(KeyboardState keyboardState, double frameTime) {
         if (this.hit) {
             if (this.animationMananger.getCurrentAnimationIdentifier()
-                    != FireBallAnimation.DESTROYING) {
+                    != FireBallAnimationType.DESTROYING) {
                 this.animationMananger.setCurrentAnimation(
-                        FireBallAnimation.DESTROYING);
+                        FireBallAnimationType.DESTROYING);
             } else {
                 if (this.animationMananger.getCurrentAnimation().
                         hasBeenPlayedOnce()) {
