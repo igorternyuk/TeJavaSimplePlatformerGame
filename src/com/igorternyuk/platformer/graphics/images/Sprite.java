@@ -20,6 +20,10 @@ public class Sprite extends Image {
         this.destRect = new Rectangle((int) this.x, (int) this.y, this.image.
                 getWidth(), this.image.getHeight());
     }
+    
+    public Sprite(BufferedImage image, double x, double y) {
+        this(image, x, y, 0, 0);
+    }
 
     public Rectangle getSourceRect() {
         return this.sourceRect;
@@ -35,6 +39,14 @@ public class Sprite extends Image {
 
     public void setDestRect(Rectangle destRect) {
         this.destRect = destRect;
+    }
+    
+    public int getWidth(){
+        return this.destRect.width;
+    }
+    
+    public int getHeight(){
+        return this.destRect.height;
     }
 
     @Override

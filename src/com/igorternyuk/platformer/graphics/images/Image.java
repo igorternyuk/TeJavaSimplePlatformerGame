@@ -1,6 +1,5 @@
 package com.igorternyuk.platformer.graphics.images;
 
-import com.igorternyuk.platformer.gameplay.Game;
 import com.igorternyuk.platformer.input.KeyboardState;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -22,8 +21,8 @@ public class Image {
         this.image = image;
         this.x = x;
         this.y = y;
-        this.dx = dx;
-        this.dy = dy;
+        this.dx = 0;
+        this.dy = 0;
     }
 
     public Image(BufferedImage image) {
@@ -35,7 +34,7 @@ public class Image {
         this.y = y;
     }
 
-    public void setSpeed(double dx, double dy) {
+    public void setVelocity(double dx, double dy) {
         this.dx = dx;
         this.dy = dy;
     }

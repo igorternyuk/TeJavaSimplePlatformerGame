@@ -150,16 +150,67 @@ public abstract class Entity {
     public void setJumping(boolean jumping) {
         this.jumping = jumping;
     }
+    
+    protected void accelerateLeft(double frameTime) {
+        this.velX -= this.horizontalAcceleration * frameTime;
+        constrainHorizontalVelocity();
+    }
+
+    protected void accelerateRight(double frameTime) {
+        this.velX += this.horizontalAcceleration * frameTime;
+        constrainHorizontalVelocity();
+    }
+    
+    protected void decelerate(double frameTime) {
+        if (this.velX > 0) {
+            this.velX -= this.horizontalDeceleration * frameTime;
+            if (this.velX < 0) {
+                this.velX = 0;
+            }
+        } else if (this.velX < 0) {
+            this.velX += this.horizontalDeceleration * frameTime;
+            if (this.velX > 0) {
+                this.velX = 0;
+            }
+        }
+    }
+    
+    protected void constrainHorizontalVelocity(){
+        if (this.velX < -this.maxVelocity) {
+            this.velX = -this.maxVelocity;
+        }
+        
+        if (this.velX > this.maxVelocity) {
+            this.velX = this.maxVelocity;
+        }
+    }
 
     public void accelerateDownwards(double frameTime) {
         this.velY += gravity * frameTime;
-        if (this.velY > this.maxFallingSpeed) {
-            this.velY = this.maxFallingSpeed;
-        }
+        contrainVerticalVelocity();
     }
 
     public void accelerateUpwards(double frameTime) {
         this.velY += this.verticalAcceleration * frameTime;
+        contrainVerticalVelocity();
+    }
+    
+    protected void contrainVerticalVelocity(){
+        if (this.velY > this.maxFallingSpeed) {
+            this.velY = this.maxFallingSpeed;
+        }
+        if(this.velY < this.maxJumpVelocity){
+            this.velY = this.maxJumpVelocity;
+        }
+    }
+    
+    public void jump(double frameTime) {
+        if (this.onGround) {
+            this.velY = this.jumpVelocityInitial;
+            this.onGround = false;
+        } else {
+            accelerateUpwards(frameTime);
+        }
     }
     
     public void move(double frameTime){

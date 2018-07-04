@@ -113,20 +113,6 @@ public class Player extends Entity {
         this.canScratch = canScratch;
     }
 
-    protected void accelerateLeft(double frameTime) {
-        this.velX -= this.horizontalAcceleration * frameTime;
-        if (this.velX < -this.maxVelocity) {
-            this.velX = -this.maxVelocity;
-        }
-    }
-
-    protected void accelerateRight(double frameTime) {
-        this.velX += this.horizontalAcceleration * frameTime;
-        if (this.velX > this.maxVelocity) {
-            this.velX = this.maxVelocity;
-        }
-    }
-
     @Override
     public void accelerateDownwards(double frameTime) {
         if (!this.onGround) {
@@ -135,29 +121,6 @@ public class Player extends Entity {
             } else {
                 this.velY += gravity * frameTime;
             }
-        }
-    }
-
-    private void decelerate(double frameTime) {
-        if (this.velX > 0) {
-            this.velX -= this.horizontalDeceleration * frameTime;
-            if (this.velX < 0) {
-                this.velX = 0;
-            }
-        } else if (this.velX < 0) {
-            this.velX += this.horizontalDeceleration * frameTime;
-            if (this.velX > 0) {
-                this.velX = 0;
-            }
-        }
-    }
-
-    private void jump(double frameTime) {
-        if (this.onGround) {
-            this.velY = this.jumpVelocityInitial;
-            this.onGround = false;
-        } else {
-            accelerateUpwards(frameTime);
         }
     }
 

@@ -44,7 +44,7 @@ public class MenuState extends GameState {
         this.background = new Background(
                 this.resourceManager.getImage(ImageIdentifier.MENU_BACKGROUND));
         this.background.setPosition(0, 0);
-        this.background.setSpeed(0.1, 0);
+        this.background.setVelocity(0.1, 0);
     }
 
     @Override
