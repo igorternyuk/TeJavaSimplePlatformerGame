@@ -9,16 +9,20 @@
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/weapon/FireBall.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/tilemap/TileMap.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/player/Player.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/Direction.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/LevelState.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/images/Image.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/MenuState.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/input/KeyboardState.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/Display.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/Entity.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gamestate/GameStateManager.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/player/PlayerAnimationType.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/images/Sprite.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/main/Main.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/graphics/images/Background.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/Game.java</file>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/player/PlayerAction.java</file>
-            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/weapon/FireBallAction.java</file>
+            <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/gameplay/entities/weapon/FireBallAnimation.java</file>
             <file>file:/home/igor/prj/java/TeJavaSimplePlatformerGame/Platformer/src/com/igorternyuk/platformer/resourcemanager/ResourceManager.java</file>
         </group>
     </open-files>

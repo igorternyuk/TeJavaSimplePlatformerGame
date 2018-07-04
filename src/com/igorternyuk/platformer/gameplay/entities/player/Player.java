@@ -225,8 +225,7 @@ public class Player extends Entity {
         }
 
         //Movement
-        moveHorizontally(frameTime);
-        moveVertically(frameTime);
+        move(frameTime);
 
         setProperAnimation();
         setProperAnimationFacing();
@@ -287,6 +286,10 @@ public class Player extends Entity {
             this.animationMananger.setCurrentAnimation(animationType);
             this.animationMananger.getCurrentAnimation().start(playMode);
         }
+    }
+    
+    public AnimationFacing getAnimationFacing(){
+        return this.animationMananger.getCurrentAnimation().getFacing();
     }
 
     private void setProperAnimationFacing() {

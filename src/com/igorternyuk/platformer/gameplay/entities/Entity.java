@@ -34,6 +34,7 @@ public abstract class Entity {
     protected boolean movingLeft = false;
     protected boolean jumping = false;
     protected boolean onGround = false;
+    protected int health;
 
     public Entity(LevelState levelState) {
         this.level = levelState;
@@ -42,7 +43,6 @@ public abstract class Entity {
     }
 
     public abstract int getWidth();
-
     public abstract int getHeight();
 
     public double getX() {
@@ -161,6 +161,11 @@ public abstract class Entity {
     public void accelerateUpwards(double frameTime) {
         this.velY += this.verticalAcceleration * frameTime;
     }
+    
+    public void move(double frameTime){
+        moveHorizontally(frameTime);
+        moveVertically(frameTime);
+    }
 
     public void moveHorizontally(double frameTime) {
         this.x += this.velX * frameTime;
@@ -192,25 +197,18 @@ public abstract class Entity {
     protected void handleHorizontalCollision(int row, int col) {
         if (this.velX > 0) {
             this.x = col * this.tileSize - this.tileSize - 2;
-            System.out.println("RIGHT COLLISION");
         } else if (this.velX < 0) {
             this.x = col * this.tileSize + this.tileSize + 2;
-            System.out.println("LEFT COLLISION");
         }
         this.velX = 0;
     }
 
     protected void handleVerticalCollision(int row, int col) {
         if (this.velY < 0) {
-            System.out.println("CEILING COLLISION");
-            System.out.println("We've touched the ceiling");
-            System.out.println("this.y = " + this.y);
-            System.out.println("row = " + row + " col = " + col);
             this.y = row * this.tileSize + this.tileSize + 1;
             this.velY = gravity;
 
         } else if (this.velY > 0) {
-            //System.out.println("BOTTOM COLLISION");
             this.y = row * this.tileSize - this.tileSize;
             this.onGround = true;
             this.velY = 0;
@@ -238,8 +236,14 @@ public abstract class Entity {
             }
         }
     }
+    
+    public void hit(int damage){
+        this.health -= damage;
+    }
 
-    public abstract boolean isAlive();
+    public boolean isAlive() {
+        return this.health > 0;
+    }
 
     public abstract void update(KeyboardState keyboardState, double frameTime);
 
