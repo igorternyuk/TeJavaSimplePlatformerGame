@@ -2,6 +2,8 @@ package com.igorternyuk.platformer.gamestate;
 
 import com.igorternyuk.platformer.gameplay.Game;
 import com.igorternyuk.platformer.gameplay.entities.Entity;
+import com.igorternyuk.platformer.gameplay.entities.enemies.Snail;
+import com.igorternyuk.platformer.gameplay.entities.enemies.Spider;
 import com.igorternyuk.platformer.gameplay.entities.player.Player;
 import com.igorternyuk.platformer.gameplay.tilemap.TileMap;
 import com.igorternyuk.platformer.graphics.images.Background;
@@ -60,10 +62,27 @@ public class LevelState extends GameState {
                 "/Sprites/Enemies/spider.gif");
         this.resourceManager.loadImage(ImageIdentifier.EXPLOSION,
                 "/Sprites/Enemies/explosion.gif");
+        startNewGame();
+    }
+    
+    private void startNewGame(){
+        createPlayer();
+        createEnemies();
+    }
+    
+    private void createPlayer(){
         this.player = new Player(this);
         this.player.setPosition(2 * this.tileMap.getTileSize(),
                 6 * this.tileMap.getTileSize());
         this.entities.add(this.player);
+    }
+    
+    private void createEnemies(){
+        Snail snail = new Snail(this, 6 * 30, 6 * 30 + 10);
+        this.entities.add(snail);
+        Spider s1 = new Spider(this, 7 * 30, 1 * 30);
+        this.entities.add(s1);
+        System.out.println("this.entities.size()" + this.entities.size());
     }
 
     @Override
@@ -131,8 +150,8 @@ public class LevelState extends GameState {
             this.tileMap.draw(g);
         }
 
-        if (this.player != null) {
-            this.player.draw(g);
+        for (int i = this.entities.size() - 1; i >= 0; --i) {
+                this.entities.get(i).draw(g);
         }
     }
 

@@ -32,6 +32,7 @@ public class Spider extends Entity{
         this.maxJumpVelocity = -9;
         this.verticalAcceleration = -0.75;
         this.onGround = false;
+        this.health = 100;
     }
     
     private void loadSprite(){
@@ -76,7 +77,10 @@ public class Spider extends Entity{
     public void draw(Graphics2D g) {
         //draw the spider's web
         g.setColor(Color.black);
-        g.drawLine(getAbsX(), 0, getAbsX(), getAbsTop());
+        g.drawLine((int)((getAbsX() + getWidth() / 2) * LevelState.SCALE),
+                (int)(0 * LevelState.SCALE),
+                (int)((getAbsX() + getWidth() / 2) * LevelState.SCALE),
+                (int)((getAbsTop() + getHeight() / 2) * LevelState.SCALE));
         this.sprite.draw(g);
     }
 

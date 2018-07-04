@@ -1,5 +1,6 @@
 package com.igorternyuk.platformer.graphics.images;
 
+import com.igorternyuk.platformer.gamestate.LevelState;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -20,9 +21,16 @@ public class Sprite extends Image {
         this.destRect = new Rectangle((int) this.x, (int) this.y, this.image.
                 getWidth(), this.image.getHeight());
     }
-    
+
     public Sprite(BufferedImage image, double x, double y) {
         this(image, x, y, 0, 0);
+    }
+
+    @Override
+    public void setPosition(double x, double y) {
+        super.setPosition(x, y);
+        this.destRect.x = (int) x;
+        this.destRect.y = (int) y;
     }
 
     public Rectangle getSourceRect() {
@@ -40,21 +48,26 @@ public class Sprite extends Image {
     public void setDestRect(Rectangle destRect) {
         this.destRect = destRect;
     }
-    
-    public int getWidth(){
+
+    public int getWidth() {
         return this.destRect.width;
     }
-    
-    public int getHeight(){
+
+    public int getHeight() {
         return this.destRect.height;
     }
 
     @Override
     public void draw(Graphics2D g) {
-        g.drawImage(image, this.destRect.x, this.destRect.y,
-                this.destRect.x + this.destRect.width,
-                this.destRect.y + this.destRect.height, this.sourceRect.x,
-                this.sourceRect.y, this.sourceRect.x + this.sourceRect.width,
+
+        g.drawImage(image, (int) (this.destRect.x * LevelState.SCALE),
+                (int) (this.destRect.y * LevelState.SCALE),
+                (int) ((this.destRect.x + this.destRect.width)
+                * LevelState.SCALE),
+                (int) ((this.destRect.y + this.destRect.height)
+                * LevelState.SCALE),
+                this.sourceRect.x, this.sourceRect.y,
+                this.sourceRect.x + this.sourceRect.width,
                 this.sourceRect.y + this.sourceRect.height, null);
     }
 

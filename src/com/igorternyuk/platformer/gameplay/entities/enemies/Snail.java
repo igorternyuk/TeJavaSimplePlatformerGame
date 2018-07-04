@@ -5,6 +5,7 @@ import com.igorternyuk.platformer.gamestate.LevelState;
 import com.igorternyuk.platformer.graphics.animations.Animation;
 import com.igorternyuk.platformer.graphics.animations.AnimationFacing;
 import com.igorternyuk.platformer.graphics.animations.AnimationManager;
+import com.igorternyuk.platformer.graphics.animations.AnimationPlayMode;
 import com.igorternyuk.platformer.input.KeyboardState;
 import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import java.awt.Graphics2D;
@@ -24,14 +25,18 @@ public class Snail extends Entity {
         setPosition(x, y);
         setupPhysics();
         loadAnimations();
+        this.animationManager.setCurrentAnimation(SnailAnimationType.CRAWLING);
+        this.animationManager.getCurrentAnimation().
+                start(AnimationPlayMode.LOOP);
     }
 
     private void setupPhysics() {
         this.onGround = true;
-        this.maxVelocity = 50;
+        this.maxVelocity = 20;
         this.velX = this.maxVelocity;
         this.velY = 0;
         this.gravity = 0;
+        this.health = 100;
     }
 
     private void loadAnimations() {
@@ -76,13 +81,13 @@ public class Snail extends Entity {
 
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
-        moveHorizontally(frameTime);
+        move(frameTime);
         this.animationManager.update(frameTime);
     }
 
     @Override
     public void draw(Graphics2D g) {
-        this.animationManager.draw(g, (int) this.x, (int) this.y,
-                LevelState.SCALE, LevelState.SCALE);
+        this.animationManager.draw(g, getAbsX(), getAbsY(), LevelState.SCALE,
+                LevelState.SCALE);
     }
 }

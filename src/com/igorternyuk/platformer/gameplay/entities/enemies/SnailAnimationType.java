@@ -9,7 +9,7 @@ import java.util.List;
  * @author igor
  */
 public enum SnailAnimationType {
-    CRAWLING(4, 10, 22, 20, 3, 30, 0.9);
+    CRAWLING(4, 10, 22, 20, 3, 30, 0.3);
     
     private List<Rectangle> frames = new ArrayList<>();
     private double animationSpeed;
