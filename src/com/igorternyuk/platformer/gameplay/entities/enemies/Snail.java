@@ -1,6 +1,7 @@
 package com.igorternyuk.platformer.gameplay.entities.enemies;
 
 import com.igorternyuk.platformer.gameplay.entities.Entity;
+import com.igorternyuk.platformer.gameplay.entities.EntityType;
 import com.igorternyuk.platformer.gamestate.LevelState;
 import com.igorternyuk.platformer.graphics.animations.Animation;
 import com.igorternyuk.platformer.graphics.animations.AnimationFacing;
@@ -21,7 +22,7 @@ public class Snail extends Entity {
             new AnimationManager<>();
 
     public Snail(LevelState levelState, double x, double y) {
-        super(levelState);
+        super(levelState, EntityType.SNAIL);
         setPosition(x, y);
         setupPhysics();
         loadAnimations();

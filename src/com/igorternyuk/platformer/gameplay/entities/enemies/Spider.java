@@ -1,6 +1,7 @@
 package com.igorternyuk.platformer.gameplay.entities.enemies;
 
 import com.igorternyuk.platformer.gameplay.entities.Entity;
+import com.igorternyuk.platformer.gameplay.entities.EntityType;
 import com.igorternyuk.platformer.gamestate.LevelState;
 import com.igorternyuk.platformer.graphics.images.Sprite;
 import com.igorternyuk.platformer.input.KeyboardState;
@@ -17,7 +18,7 @@ public class Spider extends Entity{
     private Sprite sprite;
     
     public Spider(LevelState levelState, double x, double y) {
-        super(levelState);
+        super(levelState, EntityType.SPIDER);
         setPosition(x, y);
         setupPhysics();
         loadSprite();
@@ -30,7 +31,7 @@ public class Spider extends Entity{
         this.maxFallingSpeed = 40;
         this.jumpVelocityInitial = -3;
         this.maxJumpVelocity = -9;
-        this.verticalAcceleration = -0.75;
+        this.verticalAcceleration = -1.3;
         this.onGround = false;
         this.health = 100;
     }
@@ -70,7 +71,7 @@ public class Spider extends Entity{
             accelerateUpwards(frameTime);
         }
         moveVertically(frameTime);
-        this.sprite.setPosition(this.x, this.y);        
+        this.sprite.setPosition(getAbsX(), getAbsY());        
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.igorternyuk.platformer.gameplay.entities.explosions;
 
 import com.igorternyuk.platformer.gameplay.entities.Entity;
+import com.igorternyuk.platformer.gameplay.entities.EntityType;
 import com.igorternyuk.platformer.gamestate.LevelState;
 import com.igorternyuk.platformer.graphics.animations.Animation;
 import com.igorternyuk.platformer.graphics.animations.AnimationManager;
@@ -20,7 +21,7 @@ public class Explosion extends Entity {
             new AnimationManager<>();
 
     public Explosion(LevelState levelState, double x, double y) {
-        super(levelState);
+        super(levelState, EntityType.EXPLOSION);
         this.x = x;
         this.y = y;
         loadAnimations();

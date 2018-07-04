@@ -64,20 +64,20 @@ public class LevelState extends GameState {
                 "/Sprites/Enemies/explosion.gif");
         startNewGame();
     }
-    
-    private void startNewGame(){
+
+    private void startNewGame() {
         createPlayer();
         createEnemies();
     }
-    
-    private void createPlayer(){
+
+    private void createPlayer() {
         this.player = new Player(this);
         this.player.setPosition(2 * this.tileMap.getTileSize(),
                 6 * this.tileMap.getTileSize());
         this.entities.add(this.player);
     }
-    
-    private void createEnemies(){
+
+    private void createEnemies() {
         Snail snail = new Snail(this, 6 * 30, 6 * 30 + 10);
         this.entities.add(snail);
         Spider s1 = new Spider(this, 7 * 30, 1 * 30);
@@ -99,28 +99,30 @@ public class LevelState extends GameState {
 
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
-        if (this.player != null) {
-            //Remove the dead entities
-            this.entities.removeIf(e -> e != this.player && !e.isAlive());
+        if(this.player == null)
+            return;
+        //Remove the dead entities
+        this.entities.removeIf(e -> e != this.player && !e.isAlive());
 
-            //Update all entitites
-            for (int i = this.entities.size() - 1; i >= 0; --i) {
-                this.entities.get(i).update(keyboardState, frameTime);
-            }
-            scrollTileMapCamera();
+        //Update all entitites
+        for (int i = this.entities.size() - 1; i >= 0; --i) {
+            this.entities.get(i).update(keyboardState, frameTime);
         }
+        scrollTileMapCamera();
     }
 
     private void scrollTileMapCamera() {
         if (this.tileMap != null) {
             if (this.player.getX() > SCREEN_HALF_WIDTH
-                    && this.tileMap.getWidth() - this.player.getX() > SCREEN_HALF_WIDTH) {
+                    && this.tileMap.getWidth() - this.player.getX()
+                    > SCREEN_HALF_WIDTH) {
                 int dx = (int) this.player.getX() - SCREEN_HALF_WIDTH;
                 this.tileMap.setCameraPositionX(dx);
             }
 
             if (this.player.getY() > SCREEN_HALF_HEIGHT
-                    && this.tileMap.getHeight() - this.player.getY() > SCREEN_HALF_HEIGHT) {
+                    && this.tileMap.getHeight() - this.player.getY()
+                    > SCREEN_HALF_HEIGHT) {
                 int dy = (int) this.player.getY() - SCREEN_HALF_HEIGHT;
                 this.tileMap.setCameraPositionY(dy);
             }
@@ -151,7 +153,7 @@ public class LevelState extends GameState {
         }
 
         for (int i = this.entities.size() - 1; i >= 0; --i) {
-                this.entities.get(i).draw(g);
+            this.entities.get(i).draw(g);
         }
     }
 

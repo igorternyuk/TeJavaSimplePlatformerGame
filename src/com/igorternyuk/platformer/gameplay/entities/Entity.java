@@ -12,8 +12,9 @@ import java.awt.Graphics2D;
  * @author igor
  */
 public abstract class Entity {
-
     protected LevelState level;
+    protected EntityType type;
+    
     //Tile stuff
     protected TileMap tileMap;
     protected int tileSize;
@@ -36,8 +37,9 @@ public abstract class Entity {
     protected boolean onGround = false;
     protected int health;
 
-    public Entity(LevelState levelState) {
+    public Entity(LevelState levelState, EntityType type) {
         this.level = levelState;
+        this.type = type;
         this.tileMap = levelState.getTileMap();
         this.tileSize = this.tileMap.getTileSize();
     }
@@ -45,6 +47,10 @@ public abstract class Entity {
     public abstract int getWidth();
     public abstract int getHeight();
 
+    public EntityType getType() {
+        return this.type;
+    }
+    
     public double getX() {
         return this.x;
     }

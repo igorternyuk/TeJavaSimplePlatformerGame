@@ -1,6 +1,7 @@
 package com.igorternyuk.platformer.gameplay.entities.player;
 
 import com.igorternyuk.platformer.gameplay.entities.Entity;
+import com.igorternyuk.platformer.gameplay.entities.EntityType;
 import com.igorternyuk.platformer.gameplay.entities.weapon.FireBall;
 import com.igorternyuk.platformer.gameplay.tilemap.TileMap;
 import com.igorternyuk.platformer.gamestate.LevelState;
@@ -51,7 +52,7 @@ public class Player extends Entity {
     protected AnimationManager<PlayerAnimationType> animationManager;
 
     public Player(LevelState level) {
-        super(level);
+        super(level, EntityType.PLAYER);
         this.maxVelocity = 120;
         this.horizontalAcceleration = 70;
         this.horizontalDeceleration = 40;

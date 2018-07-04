@@ -1,6 +1,7 @@
 package com.igorternyuk.platformer.gameplay.entities.weapon;
 
 import com.igorternyuk.platformer.gameplay.entities.Entity;
+import com.igorternyuk.platformer.gameplay.entities.EntityType;
 import com.igorternyuk.platformer.gameplay.entities.player.Player;
 import com.igorternyuk.platformer.gamestate.LevelState;
 import com.igorternyuk.platformer.graphics.animations.Animation;
@@ -24,7 +25,7 @@ public class FireBall extends Entity {
             new AnimationManager<>();
 
     public FireBall(LevelState level, Player player) {
-        super(level);
+        super(level, EntityType.FIREBALL);
         setPhysics(player);
         loadAnimations();
         this.animationMananger.setCurrentAnimation(FireBallAnimationType.FLYING);
