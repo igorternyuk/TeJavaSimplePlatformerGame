@@ -3,7 +3,6 @@ package com.igorternyuk.platformer.gameplay.entities.player;
 import com.igorternyuk.platformer.gameplay.entities.Entity;
 import com.igorternyuk.platformer.gameplay.entities.EntityType;
 import com.igorternyuk.platformer.gameplay.entities.weapon.FireBall;
-import com.igorternyuk.platformer.gameplay.tilemap.TileMap;
 import com.igorternyuk.platformer.gamestate.LevelState;
 import com.igorternyuk.platformer.graphics.animations.Animation;
 import com.igorternyuk.platformer.graphics.animations.AnimationFacing;
@@ -15,8 +14,6 @@ import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  *
@@ -27,18 +24,15 @@ public class Player extends Entity {
     private static final double FLINCH_PERIOD = 0.1;
     private static final double FACTOR_OF_AIR_RESISTANCE = 0.001;
 
-    private int health;
-    private int maxHealth;
-    private int fire;
-    private int maxFire;
+    private int numFires;
+    private int maxFire = 25;
     private boolean flinching = false;
     private double flichTime;
 
     //Fireball attack
     private boolean firing = false;
     private boolean canFire = true;
-    private int fireCost;
-    private List<FireBall> fireBalls = new ArrayList<>();
+    private int fireBallDamage = 25;
 
     //Scratch attack
     private boolean scratching = false;
@@ -58,8 +52,8 @@ public class Player extends Entity {
         this.horizontalDeceleration = 40;
         this.maxFallingSpeed = 40;
         this.jumpVelocityInitial = -3;
-        this.maxJumpVelocity = -9;
-        this.verticalAcceleration = -0.75;
+        this.maxJumpVelocity = -8;
+        this.verticalAcceleration = -0.5;
         this.gravity = 0.7;
         this.onGround = true;
         this.resourceMananger = level.getResourceManager();
@@ -70,6 +64,10 @@ public class Player extends Entity {
                 AnimationPlayMode.LOOP);
     }
 
+    public int getFireBallDamage() {
+        return this.fireBallDamage;
+    }
+    
     @Override
     public int getWidth() {
         return this.animationManager.getCurrentAnimation()
@@ -107,7 +105,9 @@ public class Player extends Entity {
     }
 
     public void setCanFire(boolean canFire) {
-        this.canFire = canFire;
+        if(this.numFires < this.maxFire){
+            this.canFire = canFire;
+        }
     }
 
     public void setCanScratch(boolean canScratch) {
@@ -126,7 +126,8 @@ public class Player extends Entity {
     }
 
     private void attackWithFireBall() {
-
+        this.level.getEntities().add(new FireBall(this.level, this));
+        ++this.numFires;
     }
 
     private PlayerAnimationType getCurrentAction() {
@@ -184,7 +185,7 @@ public class Player extends Entity {
             jump(frameTime);
         }
 
-        if (this.firing) {
+        if (this.firing && this.canFire) {
             attackWithFireBall();
         }
 
@@ -226,9 +227,10 @@ public class Player extends Entity {
                     .hasBeenPlayedOnce()) {
                 this.animationManager.getCurrentAnimation().stop();
                 this.firing = false;
-                this.canFire = false;
                 setAnimation(PlayerAnimationType.IDLE, AnimationPlayMode.LOOP);
             }
+            
+            this.canFire = false;
         } else if (isFalling()) {
             if (this.gliding) {
                 setAnimation(PlayerAnimationType.GLIDING, AnimationPlayMode.LOOP);

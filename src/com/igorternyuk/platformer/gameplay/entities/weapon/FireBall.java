@@ -21,31 +21,33 @@ public class FireBall extends Entity {
 
     private boolean alive = true;
     private boolean hit = false;
+    private int damage;
     private AnimationManager<FireBallAnimationType> animationMananger =
             new AnimationManager<>();
 
     public FireBall(LevelState level, Player player) {
         super(level, EntityType.FIREBALL);
-        setPhysics(player);
         loadAnimations();
         this.animationMananger.setCurrentAnimation(FireBallAnimationType.FLYING);
         this.animationMananger.getCurrentAnimation().start(
                 AnimationPlayMode.LOOP);
+        setPhysics(player);
+        this.damage = player.getFireBallDamage();
     }
 
     private void setPhysics(Player player) {
-        this.y = player.top() + player.getWidth() / 2;
+        this.y = player.top() + player.getHeight() / 4;
         this.velY = 0;
-        this.maxVelocity = 201;
+        this.maxVelocity = 200;
         this.gravity = 0.1;
         this.maxFallingSpeed = 100;
         AnimationFacing currentPlayerFacing = player.getAnimationFacing();
-        if (currentPlayerFacing == AnimationFacing.LEFT) {
+        if (currentPlayerFacing == AnimationFacing.RIGHT) {
             this.x = player.right() + this.getWidth();
-            this.velX = -200;
-        } else if (currentPlayerFacing == AnimationFacing.RIGHT) {
+            this.velX = +this.maxVelocity;
+        } else if (currentPlayerFacing == AnimationFacing.LEFT) {
             this.x = player.left() - this.getWidth();
-            this.velX = 200;
+            this.velX = -this.maxVelocity;
         }
 
     }
@@ -60,6 +62,10 @@ public class FireBall extends Entity {
         }
     }
 
+    public int getDamage() {
+        return this.damage;
+    }
+    
     @Override
     public int getWidth() {
         return this.animationMananger.getCurrentAnimation().
@@ -96,11 +102,12 @@ public class FireBall extends Entity {
                     != FireBallAnimationType.DESTROYING) {
                 this.animationMananger.setCurrentAnimation(
                         FireBallAnimationType.DESTROYING);
-            } else {
-                if (this.animationMananger.getCurrentAnimation().
-                        hasBeenPlayedOnce()) {
-                    this.alive = false;
-                }
+                this.animationMananger.getCurrentAnimation().start(
+                        AnimationPlayMode.ONCE);
+            }
+            if (this.animationMananger.getCurrentAnimation().
+                    hasBeenPlayedOnce()) {
+                this.alive = false;
             }
         }
         accelerateDownwards(frameTime);

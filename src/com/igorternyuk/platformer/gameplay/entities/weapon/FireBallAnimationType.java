@@ -9,8 +9,8 @@ import java.util.List;
  * @author igor
  */
 public enum FireBallAnimationType {
-    FLYING(7, 7, 15, 15, 4, 30, 0.1),
-    DESTROYING(6, 34, 20, 20, 3, 30, 0.5);
+    FLYING(7, 7, 16, 16, 4, 30, 0.1),
+    DESTROYING(6, 34, 20, 20, 3, 30, 0.075);
 
     private List<Rectangle> frames = new ArrayList<>();
 
