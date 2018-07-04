@@ -36,6 +36,11 @@ public abstract class Entity {
     protected boolean jumping = false;
     protected boolean onGround = false;
     protected int health;
+    
+    protected boolean flinching = false;
+    protected double flinchTime;
+    protected double flinchPeriod;
+    protected boolean needDraw = true;
 
     public Entity(LevelState levelState, EntityType type) {
         this.level = levelState;
@@ -296,13 +301,34 @@ public abstract class Entity {
     
     public void hit(int damage){
         this.health -= damage;
+        setFlinching(true);
+    }
+
+    public boolean isFlinching() {
+        return this.flinching;
+    }
+
+    public void setFlinching(boolean flinching) {
+        this.flinching = flinching;
     }
 
     public boolean isAlive() {
         return this.health > 0;
     }
 
-    public abstract void update(KeyboardState keyboardState, double frameTime);
+    public void update(KeyboardState keyboardState, double frameTime){
+        if (this.flinching) {
+            this.flinchTime += frameTime;
+            int number = (int) (this.flinchTime * 1000);
+            this.needDraw = number % 10 == 0;  
+            if (this.flinchTime >= this.flinchPeriod) {
+                this.flinchTime = 0;
+                this.flinching = false;            
+            }
+        } else {
+            this.needDraw = true;
+        }
+    }
 
     public abstract void draw(Graphics2D g);
 }

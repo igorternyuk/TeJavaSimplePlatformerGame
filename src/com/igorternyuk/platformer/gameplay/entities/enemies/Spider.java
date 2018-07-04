@@ -67,6 +67,7 @@ public class Spider extends Entity{
 
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
+        super.update(keyboardState, frameTime);
         if(this.isLifting()){
             accelerateUpwards(frameTime);
         }
@@ -76,6 +77,8 @@ public class Spider extends Entity{
 
     @Override
     public void draw(Graphics2D g) {
+        if(!this.needDraw)
+            return;
         //draw the spider's web
         g.setColor(Color.black);
         g.drawLine((int)((getAbsX() + getWidth() / 2) * LevelState.SCALE),

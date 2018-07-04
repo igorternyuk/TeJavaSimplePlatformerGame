@@ -20,14 +20,10 @@ import java.awt.image.BufferedImage;
  * @author igor
  */
 public class Player extends Entity {
-
-    private static final double FLINCH_PERIOD = 0.1;
     private static final double FACTOR_OF_AIR_RESISTANCE = 0.001;
 
     private int numFires;
     private int maxFire = 25;
-    private boolean flinching = false;
-    private double flichTime;
 
     //Fireball attack
     private boolean firing = false;
@@ -62,6 +58,7 @@ public class Player extends Entity {
         this.animationManager.setCurrentAnimation(PlayerAnimationType.IDLE);
         this.animationManager.getCurrentAnimation().start(
                 AnimationPlayMode.LOOP);
+        this.flinchPeriod = 3;
     }
 
     public int getFireBallDamage() {
@@ -164,12 +161,8 @@ public class Player extends Entity {
             this.gliding = false;
         }
     }
-
-    @Override
-    public void update(KeyboardState keyboardState, double frameTime) {
-        resetMovingFlags();
-        handleUserInput(keyboardState);
-
+    
+    private void correctMovement(double frameTime){
         if (this.movingLeft) {
             accelerateLeft(frameTime);
         } else if (this.movingRight) {
@@ -184,25 +177,29 @@ public class Player extends Entity {
         if (this.jumping) {
             jump(frameTime);
         }
-
+    }
+    
+    private void attackIfHasTo(){
         if (this.firing && this.canFire) {
             attackWithFireBall();
         }
-
-        //Movement
-        move(frameTime);
-
+    }
+    
+    private void updateAnimations(double frameTime){
         setProperAnimation();
         setProperAnimationFacing();
         this.animationManager.update(frameTime);
+    }
 
-        if (this.flinching) {
-            this.flichTime += frameTime;
-            if (this.flichTime >= FLINCH_PERIOD) {
-                this.flichTime = 0;
-                this.flinching = false;
-            }
-        }
+    @Override
+    public void update(KeyboardState keyboardState, double frameTime) {
+        super.update(keyboardState, frameTime);
+        resetMovingFlags();
+        handleUserInput(keyboardState);
+        correctMovement(frameTime);       
+        move(frameTime);        
+        attackIfHasTo();
+        updateAnimations(frameTime);
     }
 
     private void resetVelocityIfCannotMove() {
@@ -268,11 +265,8 @@ public class Player extends Entity {
 
     @Override
     public void draw(Graphics2D g) {
-        if (this.flinching) {
-            if (((int) this.flichTime * 1000) % 2 == 0) {
-                return;
-            }
-        }
+        if(!this.needDraw)
+            return;
         this.animationManager.draw(g, getAbsX(), getAbsY(),
                 LevelState.SCALE, LevelState.SCALE);
     }

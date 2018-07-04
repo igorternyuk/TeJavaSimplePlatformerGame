@@ -29,6 +29,8 @@ public class Snail extends Entity {
         this.animationManager.setCurrentAnimation(SnailAnimationType.CRAWLING);
         this.animationManager.getCurrentAnimation().
                 start(AnimationPlayMode.LOOP);
+        this.flinchPeriod = 5;
+        this.flinching = true;
     }
 
     private void setupPhysics() {
@@ -82,12 +84,15 @@ public class Snail extends Entity {
 
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
+        super.update(keyboardState, frameTime);
         move(frameTime);
         this.animationManager.update(frameTime);
     }
 
     @Override
     public void draw(Graphics2D g) {
+        if(!this.needDraw)
+            return;
         this.animationManager.draw(g, getAbsX(), getAbsY(), LevelState.SCALE,
                 LevelState.SCALE);
     }

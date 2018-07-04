@@ -53,6 +53,7 @@ public class Explosion extends Entity {
 
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
+        super.update(keyboardState, frameTime);
         this.animationManager.update(frameTime);
         if(this.animationManager.getCurrentAnimation().hasBeenPlayedOnce()){
             this.health = 0;
@@ -61,6 +62,8 @@ public class Explosion extends Entity {
 
     @Override
     public void draw(Graphics2D g) {
+        if(!this.needDraw)
+            return;
         this.animationManager.draw(g, (int) this.x, (int) this.y,
                 LevelState.SCALE, LevelState.SCALE);
     }
