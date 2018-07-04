@@ -18,6 +18,7 @@ public class Spider extends Entity{
     
     public Spider(LevelState levelState, double x, double y) {
         super(levelState);
+        setPosition(x, y);
         setupPhysics();
         loadSprite();
     }
@@ -52,12 +53,12 @@ public class Spider extends Entity{
     @Override
     protected void handleVerticalCollision(int row, int col) {
         if (this.velY < 0) {
-            this.y = row * this.tileSize + this.tileSize + 1;
+            this.y = row * this.tileSize + this.tileSize + 2;
             this.velY = gravity;
 
         } else if (this.velY > 0) {
-            this.y = row * this.tileSize - this.tileSize;
-            this.onGround = true;
+            this.y = row * this.tileSize - this.tileSize - 2;
+            //this.onGround = true;
             this.velY = this.verticalAcceleration;
         }
     }

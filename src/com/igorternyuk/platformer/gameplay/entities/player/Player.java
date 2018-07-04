@@ -48,7 +48,7 @@ public class Player extends Entity {
     private boolean gliding = false;
 
     private ResourceManager resourceMananger;
-    protected AnimationManager<PlayerAnimationType> animationMananger;
+    protected AnimationManager<PlayerAnimationType> animationManager;
 
     public Player(LevelState level) {
         super(level);
@@ -62,22 +62,22 @@ public class Player extends Entity {
         this.gravity = 0.7;
         this.onGround = true;
         this.resourceMananger = level.getResourceManager();
-        this.animationMananger = new AnimationManager<>();
+        this.animationManager = new AnimationManager<>();
         loadAnimations();
-        this.animationMananger.setCurrentAnimation(PlayerAnimationType.IDLE);
-        this.animationMananger.getCurrentAnimation().start(
+        this.animationManager.setCurrentAnimation(PlayerAnimationType.IDLE);
+        this.animationManager.getCurrentAnimation().start(
                 AnimationPlayMode.LOOP);
     }
 
     @Override
     public int getWidth() {
-        return this.animationMananger.getCurrentAnimation()
+        return this.animationManager.getCurrentAnimation()
                 .getCurrentFrameWidth();
     }
 
     @Override
     public int getHeight() {
-        return this.animationMananger.getCurrentAnimation()
+        return this.animationManager.getCurrentAnimation()
                 .getCurrentFrameHeight();
     }
 
@@ -85,7 +85,7 @@ public class Player extends Entity {
         BufferedImage spriteSheet = this.resourceMananger.getImage(
                 ImageIdentifier.PLAYER_SPRITE_SHEET);
         for (PlayerAnimationType animationType : PlayerAnimationType.values()) {
-            this.animationMananger.addAnimation(
+            this.animationManager.addAnimation(
                     animationType,
                     new Animation(spriteSheet,
                             animationType.getSpeed(),
@@ -129,7 +129,7 @@ public class Player extends Entity {
     }
 
     private PlayerAnimationType getCurrentAction() {
-        return this.animationMananger.getCurrentAnimationIdentifier();
+        return this.animationManager.getCurrentAnimationIdentifier();
     }
 
     private void handleUserInput(KeyboardState keyboardState) {
@@ -192,7 +192,7 @@ public class Player extends Entity {
 
         setProperAnimation();
         setProperAnimationFacing();
-        this.animationMananger.update(frameTime);
+        this.animationManager.update(frameTime);
 
         if (this.flinching) {
             this.flichTime += frameTime;
@@ -213,17 +213,17 @@ public class Player extends Entity {
     private void setProperAnimation() {
         if (this.scratching) {
             setAnimation(PlayerAnimationType.SCRATCHING, AnimationPlayMode.ONCE);
-            if (this.animationMananger.getCurrentAnimation().hasBeenPlayedOnce()) {
-                this.animationMananger.getCurrentAnimation().stop();
+            if (this.animationManager.getCurrentAnimation().hasBeenPlayedOnce()) {
+                this.animationManager.getCurrentAnimation().stop();
                 this.scratching = false;
                 this.canScratch = false;
                 setAnimation(PlayerAnimationType.IDLE, AnimationPlayMode.LOOP);
             }
         } else if (this.firing) {
             setAnimation(PlayerAnimationType.FIREBALLING, AnimationPlayMode.ONCE);
-            if (this.animationMananger.getCurrentAnimation()
+            if (this.animationManager.getCurrentAnimation()
                     .hasBeenPlayedOnce()) {
-                this.animationMananger.getCurrentAnimation().stop();
+                this.animationManager.getCurrentAnimation().stop();
                 this.firing = false;
                 this.canFire = false;
                 setAnimation(PlayerAnimationType.IDLE, AnimationPlayMode.LOOP);
@@ -246,20 +246,20 @@ public class Player extends Entity {
     private void setAnimation(PlayerAnimationType animationType,
             AnimationPlayMode playMode) {
         if (getCurrentAction() != animationType) {
-            this.animationMananger.setCurrentAnimation(animationType);
-            this.animationMananger.getCurrentAnimation().start(playMode);
+            this.animationManager.setCurrentAnimation(animationType);
+            this.animationManager.getCurrentAnimation().start(playMode);
         }
     }
     
     public AnimationFacing getAnimationFacing(){
-        return this.animationMananger.getCurrentAnimation().getFacing();
+        return this.animationManager.getCurrentAnimation().getFacing();
     }
 
     private void setProperAnimationFacing() {
         if (this.movingLeft) {
-            this.animationMananger.setAnimationsFacing(AnimationFacing.LEFT);
+            this.animationManager.setAnimationsFacing(AnimationFacing.LEFT);
         } else if (this.movingRight) {
-            this.animationMananger.setAnimationsFacing(AnimationFacing.RIGHT);
+            this.animationManager.setAnimationsFacing(AnimationFacing.RIGHT);
         }
     }
 
@@ -270,7 +270,7 @@ public class Player extends Entity {
                 return;
             }
         }
-        this.animationMananger.draw(g, getAbsX(), getAbsY(),
+        this.animationManager.draw(g, getAbsX(), getAbsY(),
                 LevelState.SCALE, LevelState.SCALE);
     }
 

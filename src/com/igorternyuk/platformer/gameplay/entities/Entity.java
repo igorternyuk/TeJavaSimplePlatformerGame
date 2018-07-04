@@ -124,12 +124,12 @@ public abstract class Entity {
         return !this.onGround && this.velY < 0;
     }
 
-    public void setPosition(double x, double y) {
+    public final void setPosition(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public void setVelocity(double velX, double velY) {
+    public final void setVelocity(double velX, double velY) {
         this.velX = velX;
         this.velY = velY;
     }
@@ -175,16 +175,6 @@ public abstract class Entity {
         }
     }
     
-    protected void constrainHorizontalVelocity(){
-        if (this.velX < -this.maxVelocity) {
-            this.velX = -this.maxVelocity;
-        }
-        
-        if (this.velX > this.maxVelocity) {
-            this.velX = this.maxVelocity;
-        }
-    }
-
     public void accelerateDownwards(double frameTime) {
         this.velY += gravity * frameTime;
         contrainVerticalVelocity();
@@ -193,6 +183,16 @@ public abstract class Entity {
     public void accelerateUpwards(double frameTime) {
         this.velY += this.verticalAcceleration * frameTime;
         contrainVerticalVelocity();
+    }
+    
+    protected void constrainHorizontalVelocity(){
+        if (this.velX < -this.maxVelocity) {
+            this.velX = -this.maxVelocity;
+        }
+        
+        if (this.velX > this.maxVelocity) {
+            this.velX = this.maxVelocity;
+        }
     }
     
     protected void contrainVerticalVelocity(){

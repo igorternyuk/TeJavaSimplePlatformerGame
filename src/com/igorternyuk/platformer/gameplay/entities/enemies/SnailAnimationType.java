@@ -1,4 +1,4 @@
-package com.igorternyuk.platformer.gameplay.entities.explosions;
+package com.igorternyuk.platformer.gameplay.entities.enemies;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -8,13 +8,13 @@ import java.util.List;
  *
  * @author igor
  */
-public enum ExplosionAnimationType {
-    EXPLOSION(0,0,30,30,6,30,0.3);
+public enum SnailAnimationType {
+    CRAWLING(4, 10, 22, 20, 3, 30, 0.9);
     
     private List<Rectangle> frames = new ArrayList<>();
     private double animationSpeed;
 
-    private ExplosionAnimationType(int firstFrameX, int firstFrameY, int frameWidth,
+    private SnailAnimationType(int firstFrameX, int firstFrameY, int frameWidth,
             int frameHeight, int frameCount, int frameStep,
             double animationSpeed) {
         for (int i = 0; i < frameCount; ++i) {
