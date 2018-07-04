@@ -36,6 +36,7 @@ public abstract class Entity {
     protected boolean jumping = false;
     protected boolean onGround = false;
     protected int health;
+    protected int maxHealth;
     
     protected boolean flinching = false;
     protected double flinchTime;
@@ -54,6 +55,14 @@ public abstract class Entity {
 
     public EntityType getType() {
         return this.type;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+
+    public int getMaxHealth() {
+        return this.maxHealth;
     }
     
     public double getX() {

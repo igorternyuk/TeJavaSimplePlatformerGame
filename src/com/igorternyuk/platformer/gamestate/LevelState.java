@@ -62,6 +62,8 @@ public class LevelState extends GameState {
                 "/Sprites/Enemies/spider.gif");
         this.resourceManager.loadImage(ImageIdentifier.EXPLOSION,
                 "/Sprites/Enemies/explosion.gif");
+        this.resourceManager.loadImage(ImageIdentifier.HUD,
+                "/HUD/hud.gif");
         startNewGame();
     }
 

@@ -22,7 +22,7 @@ import java.awt.image.BufferedImage;
 public class Player extends Entity {
     private static final double FACTOR_OF_AIR_RESISTANCE = 0.001;
 
-    private int numFires;
+    private int numFires = 25;
     private int maxFire = 25;
 
     //Fireball attack
@@ -33,13 +33,14 @@ public class Player extends Entity {
     //Scratch attack
     private boolean scratching = false;
     private boolean canScratch = true;
-    private int scratchDamage;
-    private int scratchRange;
+    private int scratchDamage = 50;
 
     private boolean gliding = false;
 
     private ResourceManager resourceMananger;
     protected AnimationManager<PlayerAnimationType> animationManager;
+    
+    private PlayerIndicator indicator;
 
     public Player(LevelState level) {
         super(level, EntityType.PLAYER);
@@ -58,11 +59,27 @@ public class Player extends Entity {
         this.animationManager.setCurrentAnimation(PlayerAnimationType.IDLE);
         this.animationManager.getCurrentAnimation().start(
                 AnimationPlayMode.LOOP);
+        this.health = 100;
+        this.maxHealth = 100;
         this.flinchPeriod = 3;
+        this.indicator = new PlayerIndicator(this.resourceMananger.getImage(
+                ImageIdentifier.HUD), this, 0, 0);
     }
 
     public int getFireBallDamage() {
         return this.fireBallDamage;
+    }
+    
+    public int getScratchDamage(){
+        return this.scratchDamage;
+    }
+
+    public int getNumFires() {
+        return this.numFires;
+    }
+
+    public int getMaxFire() {
+        return this.maxFire;
     }
     
     @Override
@@ -102,7 +119,7 @@ public class Player extends Entity {
     }
 
     public void setCanFire(boolean canFire) {
-        if(this.numFires < this.maxFire){
+        if(this.numFires > 0){
             this.canFire = canFire;
         }
     }
@@ -124,7 +141,7 @@ public class Player extends Entity {
 
     private void attackWithFireBall() {
         this.level.getEntities().add(new FireBall(this.level, this));
-        ++this.numFires;
+        --this.numFires;
     }
 
     private PlayerAnimationType getCurrentAction() {
@@ -194,6 +211,7 @@ public class Player extends Entity {
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
         super.update(keyboardState, frameTime);
+        this.indicator.update(keyboardState, frameTime);
         resetMovingFlags();
         handleUserInput(keyboardState);
         correctMovement(frameTime);       
@@ -265,6 +283,7 @@ public class Player extends Entity {
 
     @Override
     public void draw(Graphics2D g) {
+        this.indicator.draw(g);
         if(!this.needDraw)
             return;
         this.animationManager.draw(g, getAbsX(), getAbsY(),

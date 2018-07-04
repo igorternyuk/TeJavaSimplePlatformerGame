@@ -32,6 +32,8 @@ public class FireBall extends Entity {
         this.animationMananger.getCurrentAnimation().start(
                 AnimationPlayMode.LOOP);
         setPhysics(player);
+        this.health = 100;
+        this.maxHealth = 100;
         this.damage = player.getFireBallDamage();
     }
 
@@ -62,6 +64,14 @@ public class FireBall extends Entity {
         }
     }
 
+    public boolean isHit() {
+        return this.hit;
+    }
+
+    public void setHit(boolean hit) {
+        this.hit = hit;
+    }
+    
     public int getDamage() {
         return this.damage;
     }
