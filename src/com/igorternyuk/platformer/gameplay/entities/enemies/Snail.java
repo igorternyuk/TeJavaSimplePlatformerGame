@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
  * @author igor
  */
 public class Snail extends Entity {
-
+    
     private AnimationManager<SnailAnimationType> animationManager =
             new AnimationManager<>();
 
@@ -30,6 +30,7 @@ public class Snail extends Entity {
         this.animationManager.getCurrentAnimation().
                 start(AnimationPlayMode.LOOP);
         this.flinchPeriod = 2;
+        this.damage = 20;
     }
 
     private void setupPhysics() {

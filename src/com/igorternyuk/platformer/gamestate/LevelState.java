@@ -157,7 +157,8 @@ public class LevelState extends GameState {
     }
 
     private void checkCollisions() {
-        checkFireBallEnemyCollision();
+        checkPlayerEnemyCollisions();
+        checkFireBallEnemyCollisions();
         checkPowerups();        
     }
     
@@ -172,7 +173,18 @@ public class LevelState extends GameState {
         }
     }
     
-    private void checkFireBallEnemyCollision(){
+    private void checkPlayerEnemyCollisions(){
+        List<Entity> enemies = getEnemies();
+        for(int i = 0; i < enemies.size(); ++i){
+            Entity enemy = enemies.get(i);
+            if(enemy.collides(this.player)){
+                handlePlayerEnemyCollision(this.player, enemy);
+                break;
+            }
+        }
+    }
+    
+    private void checkFireBallEnemyCollisions(){
         List<Entity> enemies = getEnemies();
         List<FireBall> fireballs = getFireBalls();
         for(int i = 0; i < fireballs.size(); ++i){
@@ -198,7 +210,13 @@ public class LevelState extends GameState {
     }
     
     private void handlePlayerEnemyCollision(Player player, Entity enemy) {
-
+        if(!player.isFlinching() && !enemy.isFlinching()){
+            if(player.isScratching() && player.isInScratchArea(enemy)){
+                enemy.hit(this.player.getScratchDamage());
+            } else {
+                this.player.hit(enemy.getDamage());
+            }
+        }
     }
 
     private void scrollTileMapCamera() {

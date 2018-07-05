@@ -42,6 +42,7 @@ public abstract class Entity {
     protected double flinchTime;
     protected double flinchPeriod;
     protected boolean needDraw = true;
+    protected int damage;
 
     public Entity(LevelState levelState, EntityType type) {
         this.level = levelState;
@@ -54,6 +55,10 @@ public abstract class Entity {
 
     public abstract int getWidth();
     public abstract int getHeight();
+    
+    public int getDamage(){
+        return this.damage;
+    }
 
     public EntityType getType() {
         return this.type;

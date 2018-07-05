@@ -21,6 +21,7 @@ import java.awt.image.BufferedImage;
  * @author igor
  */
 public class Player extends Entity {
+
     private static final double FACTOR_OF_AIR_RESISTANCE = 0.001;
 
     private int numFires = 25;
@@ -40,7 +41,7 @@ public class Player extends Entity {
 
     private ResourceManager resourceMananger;
     protected AnimationManager<PlayerAnimationType> animationManager;
-    
+
     private PlayerIndicator indicator;
 
     public Player(LevelState level) {
@@ -64,25 +65,50 @@ public class Player extends Entity {
         this.indicator = new PlayerIndicator(this.resourceMananger.getImage(
                 ImageIdentifier.HUD), this, 0, 0);
     }
-    
+
+    public boolean isInScratchArea(Entity entity) {
+        if (!entity.collides(this)) {
+            return false;
+        }
+        AnimationFacing facing = this.animationManager.getCurrentAnimation().
+                getFacing();
+        if (facing == AnimationFacing.LEFT && entity.getX() < this.x) {
+            return true;
+        } else if (facing == AnimationFacing.RIGHT && entity.left() < right()) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
-    public void hit(int damage){
+    public void hit(int damage) {
         super.hit(damage);
         System.out.println("Player was hit health = " + this.health);
     }
-    
-    public void collectPowerup(PowerUp powerup){
+
+    public void collectPowerup(PowerUp powerup) {
         gainExtraFires(powerup.getNumFires());
         gainHealth(powerup.getHealthIncrement());
         powerup.collect();
-        
     }
-    
+
+    public boolean isFiring() {
+        return this.firing;
+    }
+
+    public boolean isScratching() {
+        return this.scratching;
+    }
+
+    public boolean isGliding() {
+        return this.gliding;
+    }
+
     public int getFireBallDamage() {
         return this.fireBallDamage;
     }
-    
-    public int getScratchDamage(){
+
+    public int getScratchDamage() {
         return this.scratchDamage;
     }
 
@@ -93,7 +119,7 @@ public class Player extends Entity {
     public int getMaxFires() {
         return this.maxFires;
     }
-    
+
     @Override
     public int getWidth() {
         return this.animationManager.getCurrentAnimation()
@@ -124,7 +150,7 @@ public class Player extends Entity {
     }
 
     public void setCanFire(boolean canFire) {
-        if(this.numFires > 0){
+        if (this.numFires > 0) {
             this.canFire = canFire;
         }
     }
@@ -132,17 +158,17 @@ public class Player extends Entity {
     public void setCanScratch(boolean canScratch) {
         this.canScratch = canScratch;
     }
-    
-    public void gainHealth(int healthIncrement){
+
+    public void gainHealth(int healthIncrement) {
         this.health += healthIncrement;
-        if(this.health > this.maxHealth){
+        if (this.health > this.maxHealth) {
             this.health = this.maxHealth;
         }
     }
-    
-    public void gainExtraFires(int numFires){
+
+    public void gainExtraFires(int numFires) {
         this.numFires += numFires;
-        if(this.numFires > this.maxFires){
+        if (this.numFires > this.maxFires) {
             this.numFires = this.maxFires;
         }
     }
@@ -197,8 +223,8 @@ public class Player extends Entity {
             this.gliding = false;
         }
     }
-    
-    private void correctMovement(double frameTime){
+
+    private void correctMovement(double frameTime) {
         if (this.movingLeft) {
             accelerateLeft(frameTime);
         } else if (this.movingRight) {
@@ -214,14 +240,14 @@ public class Player extends Entity {
             jump(frameTime);
         }
     }
-    
-    private void attackIfHasTo(){
+
+    private void attackIfHasTo() {
         if (this.firing && this.canFire) {
             attackWithFireBall();
         }
     }
-    
-    private void updateAnimations(double frameTime){
+
+    private void updateAnimations(double frameTime) {
         setProperAnimation();
         setProperAnimationFacing();
         this.animationManager.update(frameTime);
@@ -233,14 +259,15 @@ public class Player extends Entity {
         this.indicator.update(keyboardState, frameTime);
         resetMovingFlags();
         handleUserInput(keyboardState);
-        correctMovement(frameTime);       
-        move(frameTime);        
+        correctMovement(frameTime);
+        move(frameTime);
         attackIfHasTo();
         updateAnimations(frameTime);
     }
 
     private void resetVelocityIfCannotMove() {
-        if (!this.onGround && (getCurrentAction() == PlayerAnimationType.FIREBALLING
+        if (!this.onGround && (getCurrentAction()
+                == PlayerAnimationType.FIREBALLING
                 || getCurrentAction() == PlayerAnimationType.SCRATCHING)) {
             this.velX = 0;
         }
@@ -263,7 +290,7 @@ public class Player extends Entity {
                 this.firing = false;
                 setAnimation(PlayerAnimationType.IDLE, AnimationPlayMode.LOOP);
             }
-            
+
             this.canFire = false;
         } else if (isFalling()) {
             if (this.gliding) {
@@ -287,8 +314,8 @@ public class Player extends Entity {
             this.animationManager.getCurrentAnimation().start(playMode);
         }
     }
-    
-    public AnimationFacing getAnimationFacing(){
+
+    public AnimationFacing getAnimationFacing() {
         return this.animationManager.getCurrentAnimation().getFacing();
     }
 
@@ -299,7 +326,7 @@ public class Player extends Entity {
             this.animationManager.setAnimationsFacing(AnimationFacing.RIGHT);
         }
     }
-    
+
     private void loadAnimations() {
         BufferedImage spriteSheet = this.resourceMananger.getImage(
                 ImageIdentifier.PLAYER_SPRITE_SHEET);
@@ -315,8 +342,9 @@ public class Player extends Entity {
     @Override
     public void draw(Graphics2D g) {
         this.indicator.draw(g);
-        if(!this.needDraw)
+        if (!this.needDraw) {
             return;
+        }
         this.animationManager.draw(g, getAbsX(), getAbsY(),
                 LevelState.SCALE, LevelState.SCALE);
     }

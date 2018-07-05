@@ -64,13 +64,13 @@ public class TileMap {
         return this.height;
     }
 
-    private boolean isValidCoordinates(int row, int col) {
+    private boolean areCoordinatesValid(int row, int col) {
         return row >= 0 && row < this.map.length
                 && col >= 0 && col < this.map[row].length;
     }
 
     public TileType getTileType(int row, int col) {
-        if (isValidCoordinates(row, col)) {
+        if (areCoordinatesValid(row, col)) {
             int val = this.map[row][col];
             int r = val / this.numTilesX;
             int c = val % this.numTilesX;

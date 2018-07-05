@@ -14,17 +14,19 @@ import java.awt.image.BufferedImage;
  *
  * @author igor
  */
-public class Spider extends Entity{
+public class Spider extends Entity {
+
     private Sprite sprite;
-    
+
     public Spider(LevelState levelState, double x, double y) {
         super(levelState, EntityType.SPIDER);
         setPosition(x, y);
         setupPhysics();
         loadSprite();
+        this.damage = 30;
     }
-    
-    private void setupPhysics(){
+
+    private void setupPhysics() {
         this.velX = 0;
         this.velY = 0;
         this.gravity = 0.8;
@@ -35,8 +37,8 @@ public class Spider extends Entity{
         this.onGround = false;
         this.flinchPeriod = 3;
     }
-    
-    private void loadSprite(){
+
+    private void loadSprite() {
         BufferedImage image = this.level.getResourceManager().getImage(
                 ImageIdentifier.SPIDER);
         this.sprite = new Sprite(image, this.x, this.y);
@@ -46,12 +48,12 @@ public class Spider extends Entity{
     public int getWidth() {
         return this.sprite.getWidth();
     }
-    
+
     @Override
-    public int getHeight(){
+    public int getHeight() {
         return this.sprite.getHeight();
     }
-    
+
     @Override
     protected void handleVerticalCollision(int row, int col) {
         if (this.velY < 0) {
@@ -68,23 +70,24 @@ public class Spider extends Entity{
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
         super.update(keyboardState, frameTime);
-        if(this.isLifting()){
+        if (this.isLifting()) {
             accelerateUpwards(frameTime);
         }
         moveVertically(frameTime);
-        this.sprite.setPosition(getAbsX(), getAbsY());        
+        this.sprite.setPosition(getAbsX(), getAbsY());
     }
 
     @Override
     public void draw(Graphics2D g) {
-        if(!this.needDraw)
+        if (!this.needDraw) {
             return;
+        }
         //draw the spider's web
         g.setColor(Color.black);
-        g.drawLine((int)((getAbsX() + getWidth() / 2) * LevelState.SCALE),
-                (int)(0 * LevelState.SCALE),
-                (int)((getAbsX() + getWidth() / 2) * LevelState.SCALE),
-                (int)((getAbsTop() + getHeight() / 2) * LevelState.SCALE));
+        g.drawLine((int) ((getAbsX() + getWidth() / 2) * LevelState.SCALE),
+                (int) (0 * LevelState.SCALE),
+                (int) ((getAbsX() + getWidth() / 2) * LevelState.SCALE),
+                (int) ((getAbsTop() + getHeight() / 2) * LevelState.SCALE));
         this.sprite.draw(g);
     }
 
