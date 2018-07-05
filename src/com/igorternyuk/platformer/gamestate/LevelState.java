@@ -5,8 +5,9 @@ import com.igorternyuk.platformer.gameplay.entities.Entity;
 import com.igorternyuk.platformer.gameplay.entities.EntityType;
 import com.igorternyuk.platformer.gameplay.entities.enemies.Snail;
 import com.igorternyuk.platformer.gameplay.entities.enemies.Spider;
+import com.igorternyuk.platformer.gameplay.entities.explosions.Explosion;
 import com.igorternyuk.platformer.gameplay.entities.player.Player;
-import com.igorternyuk.platformer.gameplay.entities.powerups.Powerup;
+import com.igorternyuk.platformer.gameplay.entities.powerups.PowerUp;
 import com.igorternyuk.platformer.gameplay.entities.powerups.PowerupType;
 import com.igorternyuk.platformer.gameplay.entities.weapon.FireBall;
 import com.igorternyuk.platformer.gameplay.tilemap.TileMap;
@@ -96,9 +97,9 @@ public class LevelState extends GameState {
     }
 
     private void createPowerups() {
-        Powerup p1 = new Powerup(this, EntityType.POWERUP,
+        PowerUp p1 = new PowerUp(this, EntityType.POWERUP,
                 PowerupType.EXTRA_HEALTH, 16 * 30, 2 * 30);
-        Powerup p2 = new Powerup(this, EntityType.POWERUP,
+        PowerUp p2 = new PowerUp(this, EntityType.POWERUP,
                 PowerupType.EXTRA_FIRES, 5 * 30, 5 * 30);
         this.entities.add(p1);
         this.entities.add(p2);
@@ -149,16 +150,26 @@ public class LevelState extends GameState {
                 collect(Collectors.toList());
     }
 
-    private List<Powerup> getPowerups() {
+    private List<PowerUp> getPowerups() {
         return this.entities.stream().filter(e -> e.getType()
-                == EntityType.POWERUP).map(e -> (Powerup) e).collect(
+                == EntityType.POWERUP).map(e -> (PowerUp) e).collect(
                 Collectors.toList());
     }
 
     private void checkCollisions() {
         checkFireBallEnemyCollision();
-        
-        
+        checkPowerups();        
+    }
+    
+    private void checkPowerups(){
+        List<PowerUp> powerups = getPowerups();
+        for(int i = 0; i < powerups.size(); ++i){
+            PowerUp powerup = powerups.get(i);
+            if(this.player.collides(powerup)){
+                this.player.collectPowerup(powerup);
+                break;
+            }
+        }
     }
     
     private void checkFireBallEnemyCollision(){
@@ -169,15 +180,24 @@ public class LevelState extends GameState {
                 FireBall fireball = fireballs.get(i);
                 Entity enemy = enemies.get(j);
                 if(!enemy.isFlinching() && fireball.collides(enemy)){
-                    enemy.hit(fireball.getDamage());
-                    fireball.setHit(true);
+                    handleFireBallEnemyCollision(fireball, enemy);
                     break;
-                }
+                }                
             }
         }
     }
     
-    private void handlePlayerEnemy(Player player, Entity enemy) {
+    private void handleFireBallEnemyCollision(FireBall fireball, Entity enemy){
+        if(!enemy.isFlinching() && fireball.collides(enemy)){
+            fireball.setHit(true);
+            enemy.hit(fireball.getDamage());
+            if(!enemy.isAlive()){
+                this.entities.add(new Explosion(this, enemy.getX(), enemy.getY()));
+            }
+        }
+    }
+    
+    private void handlePlayerEnemyCollision(Player player, Entity enemy) {
 
     }
 

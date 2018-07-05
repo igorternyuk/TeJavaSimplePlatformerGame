@@ -15,14 +15,14 @@ import java.util.Random;
  *
  * @author igor
  */
-public class Powerup extends Entity {
+public class PowerUp extends Entity {
 
     private PowerupType powerupType;
     private Sprite sprite;
     private int numFires;
     private int healthIncrement;
 
-    public Powerup(LevelState levelState, EntityType type,
+    public PowerUp(LevelState levelState, EntityType type,
             PowerupType powerupType, double x, double y) {
         super(levelState, type);
         this.powerupType = powerupType;

@@ -29,7 +29,7 @@ public class Snail extends Entity {
         this.animationManager.setCurrentAnimation(SnailAnimationType.CRAWLING);
         this.animationManager.getCurrentAnimation().
                 start(AnimationPlayMode.LOOP);
-        this.flinchPeriod = 5;
+        this.flinchPeriod = 2;
     }
 
     private void setupPhysics() {

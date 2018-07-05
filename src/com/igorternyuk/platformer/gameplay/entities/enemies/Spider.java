@@ -33,7 +33,7 @@ public class Spider extends Entity{
         this.maxJumpVelocity = -9;
         this.verticalAcceleration = -1.3;
         this.onGround = false;
-        this.flinchPeriod = 5;
+        this.flinchPeriod = 3;
     }
     
     private void loadSprite(){

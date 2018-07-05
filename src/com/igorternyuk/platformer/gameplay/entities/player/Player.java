@@ -2,6 +2,7 @@ package com.igorternyuk.platformer.gameplay.entities.player;
 
 import com.igorternyuk.platformer.gameplay.entities.Entity;
 import com.igorternyuk.platformer.gameplay.entities.EntityType;
+import com.igorternyuk.platformer.gameplay.entities.powerups.PowerUp;
 import com.igorternyuk.platformer.gameplay.entities.weapon.FireBall;
 import com.igorternyuk.platformer.gamestate.LevelState;
 import com.igorternyuk.platformer.graphics.animations.Animation;
@@ -62,6 +63,19 @@ public class Player extends Entity {
         this.flinchPeriod = 3;
         this.indicator = new PlayerIndicator(this.resourceMananger.getImage(
                 ImageIdentifier.HUD), this, 0, 0);
+    }
+    
+    @Override
+    public void hit(int damage){
+        super.hit(damage);
+        System.out.println("Player was hit health = " + this.health);
+    }
+    
+    public void collectPowerup(PowerUp powerup){
+        gainExtraFires(powerup.getNumFires());
+        gainHealth(powerup.getHealthIncrement());
+        powerup.collect();
+        
     }
     
     public int getFireBallDamage() {
