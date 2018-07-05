@@ -13,5 +13,6 @@ public enum ImageIdentifier {
     SNAIL,
     SPIDER,
     EXPLOSION,
-    HUD;
+    HUD,
+    POWERUPS;
 }

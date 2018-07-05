@@ -48,6 +48,8 @@ public abstract class Entity {
         this.type = type;
         this.tileMap = levelState.getTileMap();
         this.tileSize = this.tileMap.getTileSize();
+        this.health = 100;
+        this.maxHealth = 100;
     }
 
     public abstract int getWidth();

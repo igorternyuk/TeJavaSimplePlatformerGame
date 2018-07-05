@@ -9,5 +9,6 @@ public enum EntityType {
     FIREBALL,
     EXPLOSION,
     SNAIL,
-    SPIDER    
+    SPIDER,
+    POWERUP;
 }

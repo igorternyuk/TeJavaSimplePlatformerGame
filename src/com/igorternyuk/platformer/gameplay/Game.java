@@ -72,10 +72,10 @@ public class Game implements Runnable {
                 "Do you really want to exit?",
                 "Confirm exit, please",
                 JOptionPane.YES_NO_OPTION);
-        if (reply == JOptionPane.YES_OPTION) {
-            stop();
-            System.exit(0);
-        }
+        if(reply == JOptionPane.NO_OPTION)
+            return;
+        stop();
+        System.exit(0);
     }
 
     public synchronized void start() {

@@ -40,8 +40,8 @@ public class Image {
     }
 
     public void update(KeyboardState keyBoardState, double frameTime) {
-        this.x += this.dx;
-        this.y += this.dy;
+        this.x += this.dx * frameTime;
+        this.y += this.dy * frameTime;
     }
 
     public void draw(Graphics2D g) {

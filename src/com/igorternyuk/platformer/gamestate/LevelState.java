@@ -2,9 +2,13 @@ package com.igorternyuk.platformer.gamestate;
 
 import com.igorternyuk.platformer.gameplay.Game;
 import com.igorternyuk.platformer.gameplay.entities.Entity;
+import com.igorternyuk.platformer.gameplay.entities.EntityType;
 import com.igorternyuk.platformer.gameplay.entities.enemies.Snail;
 import com.igorternyuk.platformer.gameplay.entities.enemies.Spider;
 import com.igorternyuk.platformer.gameplay.entities.player.Player;
+import com.igorternyuk.platformer.gameplay.entities.powerups.Powerup;
+import com.igorternyuk.platformer.gameplay.entities.powerups.PowerupType;
+import com.igorternyuk.platformer.gameplay.entities.weapon.FireBall;
 import com.igorternyuk.platformer.gameplay.tilemap.TileMap;
 import com.igorternyuk.platformer.graphics.images.Background;
 import java.awt.Graphics2D;
@@ -14,6 +18,7 @@ import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -64,12 +69,15 @@ public class LevelState extends GameState {
                 "/Sprites/Enemies/explosion.gif");
         this.resourceManager.loadImage(ImageIdentifier.HUD,
                 "/HUD/hud.gif");
+        this.resourceManager.loadImage(ImageIdentifier.POWERUPS,
+                "/Sprites/Powerups/powerups.png");
         startNewGame();
     }
 
     private void startNewGame() {
         createPlayer();
         createEnemies();
+        createPowerups();
     }
 
     private void createPlayer() {
@@ -86,10 +94,21 @@ public class LevelState extends GameState {
         this.entities.add(s1);
         System.out.println("this.entities.size()" + this.entities.size());
     }
+    
+    private void createPowerups(){
+        Powerup p1 = new Powerup(this, EntityType.POWERUP,
+                PowerupType.EXTRA_HEALTH, 16 * 30, 2 * 30);
+        Powerup p2 = new Powerup(this, EntityType.POWERUP,
+                PowerupType.EXTRA_FIRES, 5 * 30, 5 * 30);
+        this.entities.add(p1);
+        this.entities.add(p2);
+    }
 
     @Override
     public void unload() {
         this.player = null;
+        this.resourceManager.unloadImage(ImageIdentifier.POWERUPS);
+        this.resourceManager.unloadImage(ImageIdentifier.HUD);
         this.resourceManager.unloadImage(ImageIdentifier.EXPLOSION);
         this.resourceManager.unloadImage(ImageIdentifier.SPIDER);
         this.resourceManager.unloadImage(ImageIdentifier.SNAIL);
@@ -101,8 +120,9 @@ public class LevelState extends GameState {
 
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
-        if(this.player == null)
+        if (this.player == null) {
             return;
+        }
         //Remove the dead entities
         this.entities.removeIf(e -> e != this.player && !e.isAlive());
 
@@ -110,7 +130,34 @@ public class LevelState extends GameState {
         for (int i = this.entities.size() - 1; i >= 0; --i) {
             this.entities.get(i).update(keyboardState, frameTime);
         }
+
+        //checkCollisions();
+
         scrollTileMapCamera();
+    }
+
+    private void checkCollisions() {
+        for (int i = 0; i < this.entities.size(); ++i) {
+            for (int j = i; j < this.entities.size(); ++j) {
+                Entity first = this.entities.get(i);
+                Entity second = this.entities.get(j);
+                if (first.getType() == EntityType.FIREBALL) {
+                    FireBall fireball = (FireBall) first;
+                    int damage = fireball.getDamage();
+                    if (second.getType() == EntityType.SNAIL
+                            || second.getType() == EntityType.SPIDER) {
+                        if (!second.isFlinching()) {
+                            second.hit(damage);
+                            fireball.setHit(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private void handlePlayerEnemy(Player player, Entity enemy){
+        
     }
 
     private void scrollTileMapCamera() {

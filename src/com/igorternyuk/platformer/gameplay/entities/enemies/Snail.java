@@ -29,8 +29,6 @@ public class Snail extends Entity {
         this.animationManager.setCurrentAnimation(SnailAnimationType.CRAWLING);
         this.animationManager.getCurrentAnimation().
                 start(AnimationPlayMode.LOOP);
-        this.health = 100;
-        this.maxHealth = 100;
         this.flinchPeriod = 5;
     }
 

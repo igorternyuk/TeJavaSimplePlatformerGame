@@ -23,7 +23,7 @@ public class Player extends Entity {
     private static final double FACTOR_OF_AIR_RESISTANCE = 0.001;
 
     private int numFires = 25;
-    private int maxFire = 25;
+    private int maxFires = 25;
 
     //Fireball attack
     private boolean firing = false;
@@ -59,13 +59,11 @@ public class Player extends Entity {
         this.animationManager.setCurrentAnimation(PlayerAnimationType.IDLE);
         this.animationManager.getCurrentAnimation().start(
                 AnimationPlayMode.LOOP);
-        this.health = 100;
-        this.maxHealth = 100;
         this.flinchPeriod = 3;
         this.indicator = new PlayerIndicator(this.resourceMananger.getImage(
                 ImageIdentifier.HUD), this, 0, 0);
     }
-
+    
     public int getFireBallDamage() {
         return this.fireBallDamage;
     }
@@ -78,8 +76,8 @@ public class Player extends Entity {
         return this.numFires;
     }
 
-    public int getMaxFire() {
-        return this.maxFire;
+    public int getMaxFires() {
+        return this.maxFires;
     }
     
     @Override
@@ -94,16 +92,9 @@ public class Player extends Entity {
                 .getCurrentFrameHeight();
     }
 
-    private void loadAnimations() {
-        BufferedImage spriteSheet = this.resourceMananger.getImage(
-                ImageIdentifier.PLAYER_SPRITE_SHEET);
-        for (PlayerAnimationType animationType : PlayerAnimationType.values()) {
-            this.animationManager.addAnimation(
-                    animationType,
-                    new Animation(spriteSheet,
-                            animationType.getSpeed(),
-                            animationType.getFrames()));
-        }
+    @Override
+    public boolean isAlive() {
+        return this.health > 0;
     }
 
     public void setGliding(boolean gliding) {
@@ -126,6 +117,20 @@ public class Player extends Entity {
 
     public void setCanScratch(boolean canScratch) {
         this.canScratch = canScratch;
+    }
+    
+    public void gainHealth(int healthIncrement){
+        this.health += healthIncrement;
+        if(this.health > this.maxHealth){
+            this.health = this.maxHealth;
+        }
+    }
+    
+    public void gainExtraFires(int numFires){
+        this.numFires += numFires;
+        if(this.numFires > this.maxFires){
+            this.numFires = this.maxFires;
+        }
     }
 
     @Override
@@ -280,6 +285,18 @@ public class Player extends Entity {
             this.animationManager.setAnimationsFacing(AnimationFacing.RIGHT);
         }
     }
+    
+    private void loadAnimations() {
+        BufferedImage spriteSheet = this.resourceMananger.getImage(
+                ImageIdentifier.PLAYER_SPRITE_SHEET);
+        for (PlayerAnimationType animationType : PlayerAnimationType.values()) {
+            this.animationManager.addAnimation(
+                    animationType,
+                    new Animation(spriteSheet,
+                            animationType.getSpeed(),
+                            animationType.getFrames()));
+        }
+    }
 
     @Override
     public void draw(Graphics2D g) {
@@ -288,10 +305,5 @@ public class Player extends Entity {
             return;
         this.animationManager.draw(g, getAbsX(), getAbsY(),
                 LevelState.SCALE, LevelState.SCALE);
-    }
-
-    @Override
-    public boolean isAlive() {
-        return this.health > 0;
     }
 }

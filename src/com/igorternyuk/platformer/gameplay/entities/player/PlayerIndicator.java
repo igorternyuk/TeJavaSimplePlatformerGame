@@ -29,8 +29,7 @@ public class PlayerIndicator extends Image {
     public void update(KeyboardState keyBoardState, double frameTime) {
         this.healthText = this.player.getHealth() + " / " + this.player.
                 getMaxHealth();
-        this.fireText = this.player.getNumFires() + " / " + this.player.
-                getMaxFire();
+        this.fireText = this.player.getNumFires() + " / " + this.player.getMaxFires();
     }
 
     @Override
