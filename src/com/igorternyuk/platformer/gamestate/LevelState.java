@@ -259,7 +259,7 @@ public class LevelState extends GameState {
     @Override
     public void onKeyReleased(int keyCode) {
         if (keyCode == KeyEvent.VK_F) {
-            this.player.setCanFire(true);
+            this.player.resetAlreadyFired();
         } else if (keyCode == KeyEvent.VK_R) {
             this.player.setCanScratch(true);
         }

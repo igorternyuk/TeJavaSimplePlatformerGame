@@ -29,7 +29,7 @@ public class Player extends Entity {
 
     //Fireball attack
     private boolean firing = false;
-    private boolean canFire = true;
+    private boolean alreadyFired = true;
     private int fireBallDamage = 25;
 
     //Scratch attack
@@ -70,11 +70,13 @@ public class Player extends Entity {
         if (!entity.collides(this)) {
             return false;
         }
-        AnimationFacing facing = this.animationManager.getCurrentAnimation().
-                getFacing();
-        if (facing == AnimationFacing.LEFT && entity.getX() < this.x) {
+        AnimationFacing currentPlayerFacing = this.animationManager.
+                getCurrentAnimation().getFacing();
+        if (currentPlayerFacing == AnimationFacing.LEFT && entity.right()
+                > left()) {
             return true;
-        } else if (facing == AnimationFacing.RIGHT && entity.left() < right()) {
+        } else if (currentPlayerFacing == AnimationFacing.RIGHT && entity.left()
+                < right()) {
             return true;
         }
         return false;
@@ -149,10 +151,12 @@ public class Player extends Entity {
         this.scratching = true;
     }
 
-    public void setCanFire(boolean canFire) {
-        if (this.numFires > 0) {
-            this.canFire = canFire;
-        }
+    public void resetAlreadyFired() {
+        this.alreadyFired = false;
+    }
+
+    public boolean canFire() {
+        return !isFlinching() && !this.alreadyFired && this.numFires > 0;
     }
 
     public void setCanScratch(boolean canScratch) {
@@ -185,8 +189,10 @@ public class Player extends Entity {
     }
 
     private void attackWithFireBall() {
-        this.level.getEntities().add(new FireBall(this.level, this));
-        --this.numFires;
+        if (canFire()) {
+            this.level.getEntities().add(new FireBall(this.level, this));
+            --this.numFires;
+        }
     }
 
     private PlayerAnimationType getCurrentAction() {
@@ -202,7 +208,7 @@ public class Player extends Entity {
             this.movingRight = true;
         }
 
-        if (this.canFire) {
+        if (!this.alreadyFired) {
             this.firing = keyboardState.isKeyPressed(KeyEvent.VK_F);
         }
 
@@ -242,7 +248,7 @@ public class Player extends Entity {
     }
 
     private void attackIfHasTo() {
-        if (this.firing && this.canFire) {
+        if (this.firing) {
             attackWithFireBall();
         }
     }
@@ -278,7 +284,6 @@ public class Player extends Entity {
             setAnimation(PlayerAnimationType.SCRATCHING, AnimationPlayMode.ONCE);
             if (this.animationManager.getCurrentAnimation().hasBeenPlayedOnce()) {
                 this.animationManager.getCurrentAnimation().stop();
-                this.scratching = false;
                 this.canScratch = false;
                 setAnimation(PlayerAnimationType.IDLE, AnimationPlayMode.LOOP);
             }
@@ -290,8 +295,7 @@ public class Player extends Entity {
                 this.firing = false;
                 setAnimation(PlayerAnimationType.IDLE, AnimationPlayMode.LOOP);
             }
-
-            this.canFire = false;
+            this.alreadyFired = true;
         } else if (isFalling()) {
             if (this.gliding) {
                 setAnimation(PlayerAnimationType.GLIDING, AnimationPlayMode.LOOP);
