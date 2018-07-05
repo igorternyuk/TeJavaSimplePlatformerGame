@@ -51,8 +51,8 @@ public class Player extends Entity {
         this.horizontalDeceleration = 40;
         this.maxFallingSpeed = 40;
         this.jumpVelocityInitial = -3;
-        this.maxJumpVelocity = -8;
-        this.verticalAcceleration = -0.5;
+        this.maxJumpVelocity = -6;
+        this.verticalAcceleration = -0.4;
         this.gravity = 0.7;
         this.onGround = true;
         this.resourceMananger = level.getResourceManager();
@@ -85,7 +85,6 @@ public class Player extends Entity {
     @Override
     public void hit(int damage) {
         super.hit(damage);
-        System.out.println("Player was hit health = " + this.health);
     }
 
     public void collectPowerup(PowerUp powerup) {
@@ -269,12 +268,12 @@ public class Player extends Entity {
         move(frameTime);
         attackIfHasTo();
         updateAnimations(frameTime);
+        
     }
 
     private void resetVelocityIfCannotMove() {
-        if (!this.onGround && (getCurrentAction()
-                == PlayerAnimationType.FIREBALLING
-                || getCurrentAction() == PlayerAnimationType.SCRATCHING)) {
+        if (getCurrentAction() == PlayerAnimationType.FIREBALLING
+                || getCurrentAction() == PlayerAnimationType.SCRATCHING) {
             this.velX = 0;
         }
     }

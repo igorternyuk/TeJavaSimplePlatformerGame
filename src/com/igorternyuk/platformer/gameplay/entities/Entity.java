@@ -241,8 +241,13 @@ public abstract class Entity {
     }
     
     public void move(double frameTime){
-        moveHorizontally(frameTime);
+        /*It it is very important to call moveVertically method first because 
+        when the player tries to fire or scratch running it will be swept away from the map.
+        The cause is horizontal collision handler and continues tries to fall
+        in order to determine if the player is on the ground or not and further
+        y coordinate correction*/
         moveVertically(frameTime);
+        moveHorizontally(frameTime);
     }
 
     public void moveHorizontally(double frameTime) {
@@ -255,7 +260,7 @@ public abstract class Entity {
             accelerateDownwards(frameTime);
         }
         /*The player should constantly try to fall in order to determine
-        if it is on the ground*/
+        if it is on the ground or not*/
         this.y += this.velY;
         if (this.y < 0) {
             this.y = 0;
@@ -289,6 +294,7 @@ public abstract class Entity {
         } else if (this.velY > 0) {
             this.y = row * this.tileSize - this.tileSize;
             this.onGround = true;
+            this.jumping = false;
             this.velY = 0;
         }
     }

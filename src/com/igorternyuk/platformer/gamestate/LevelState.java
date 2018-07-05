@@ -251,6 +251,10 @@ public class LevelState extends GameState {
             }
         }
     }
+    
+    public void checkGameStatus(){
+        
+    }
 
     @Override
     public void onKeyPressed(int keyCode) {
