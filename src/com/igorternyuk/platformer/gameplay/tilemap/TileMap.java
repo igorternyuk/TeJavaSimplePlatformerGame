@@ -120,7 +120,7 @@ public class TileMap {
     public void loadTileSet(String pathToTileSetFile) {
         if (this.resourceManager.loadImage(ImageIdentifier.TILE_SET,
                 pathToTileSetFile)) {
-            System.out.println("Tile set was successfully loaded");
+            System.out.println("The tile set was successfully loaded");
         }
         this.tileSet = this.resourceManager.getImage(ImageIdentifier.TILE_SET);
         this.numTilesX = this.tileSet.getWidth() / this.tileSize;

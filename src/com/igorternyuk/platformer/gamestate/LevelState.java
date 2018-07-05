@@ -94,8 +94,8 @@ public class LevelState extends GameState {
         this.entities.add(s1);
         System.out.println("this.entities.size()" + this.entities.size());
     }
-    
-    private void createPowerups(){
+
+    private void createPowerups() {
         Powerup p1 = new Powerup(this, EntityType.POWERUP,
                 PowerupType.EXTRA_HEALTH, 16 * 30, 2 * 30);
         Powerup p2 = new Powerup(this, EntityType.POWERUP,
@@ -131,33 +131,54 @@ public class LevelState extends GameState {
             this.entities.get(i).update(keyboardState, frameTime);
         }
 
-        //checkCollisions();
+        checkCollisions();
 
         scrollTileMapCamera();
     }
 
+    private List<Entity> getEnemies() {
+        return this.entities.stream().filter(
+                e -> e.getType() == EntityType.SNAIL
+                || e.getType() == EntityType.SPIDER).
+                collect(Collectors.toList());
+    }
+
+    private List<FireBall> getFireBalls() {
+        return this.entities.stream().filter(e ->
+                e.getType() == EntityType.FIREBALL).map(e -> (FireBall) e).
+                collect(Collectors.toList());
+    }
+
+    private List<Powerup> getPowerups() {
+        return this.entities.stream().filter(e -> e.getType()
+                == EntityType.POWERUP).map(e -> (Powerup) e).collect(
+                Collectors.toList());
+    }
+
     private void checkCollisions() {
-        for (int i = 0; i < this.entities.size(); ++i) {
-            for (int j = i; j < this.entities.size(); ++j) {
-                Entity first = this.entities.get(i);
-                Entity second = this.entities.get(j);
-                if (first.getType() == EntityType.FIREBALL) {
-                    FireBall fireball = (FireBall) first;
-                    int damage = fireball.getDamage();
-                    if (second.getType() == EntityType.SNAIL
-                            || second.getType() == EntityType.SPIDER) {
-                        if (!second.isFlinching()) {
-                            second.hit(damage);
-                            fireball.setHit(true);
-                        }
-                    }
+        checkFireBallEnemyCollision();
+        
+        
+    }
+    
+    private void checkFireBallEnemyCollision(){
+        List<Entity> enemies = getEnemies();
+        List<FireBall> fireballs = getFireBalls();
+        for(int i = 0; i < fireballs.size(); ++i){
+            for(int j = 0; j < enemies.size(); ++j){
+                FireBall fireball = fireballs.get(i);
+                Entity enemy = enemies.get(j);
+                if(!enemy.isFlinching() && fireball.collides(enemy)){
+                    enemy.hit(fireball.getDamage());
+                    fireball.setHit(true);
+                    break;
                 }
             }
         }
     }
     
-    private void handlePlayerEnemy(Player player, Entity enemy){
-        
+    private void handlePlayerEnemy(Player player, Entity enemy) {
+
     }
 
     private void scrollTileMapCamera() {

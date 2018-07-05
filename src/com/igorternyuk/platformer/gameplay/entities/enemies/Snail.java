@@ -44,9 +44,9 @@ public class Snail extends Entity {
     private void loadAnimations() {
         BufferedImage spriteSheet = this.level.getResourceManager().getImage(
                 ImageIdentifier.SNAIL);
-        for (SnailAnimationType type : SnailAnimationType.values()) {
-            this.animationManager.addAnimation(type, new Animation(spriteSheet,
-                    type.getAnimationSpeed(), type.getFrames()));
+        for (SnailAnimationType animType : SnailAnimationType.values()) {
+            this.animationManager.addAnimation(animType, new Animation(spriteSheet,
+                    animType.getAnimationSpeed(), animType.getFrames()));
         }
     }
 
