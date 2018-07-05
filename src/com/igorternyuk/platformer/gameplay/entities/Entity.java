@@ -12,9 +12,10 @@ import java.awt.Graphics2D;
  * @author igor
  */
 public abstract class Entity {
+
     protected LevelState level;
     protected EntityType type;
-    
+
     //Tile stuff
     protected TileMap tileMap;
     protected int tileSize;
@@ -37,7 +38,7 @@ public abstract class Entity {
     protected boolean onGround = false;
     protected int health;
     protected int maxHealth;
-    
+
     protected boolean flinching = false;
     protected double flinchTime;
     protected double flinchPeriod;
@@ -54,9 +55,10 @@ public abstract class Entity {
     }
 
     public abstract int getWidth();
+
     public abstract int getHeight();
-    
-    public int getDamage(){
+
+    public int getDamage() {
         return this.damage;
     }
 
@@ -71,7 +73,7 @@ public abstract class Entity {
     public int getMaxHealth() {
         return this.maxHealth;
     }
-    
+
     public double getX() {
         return this.x;
     }
@@ -177,7 +179,7 @@ public abstract class Entity {
     public void setJumping(boolean jumping) {
         this.jumping = jumping;
     }
-    
+
     protected void accelerateLeft(double frameTime) {
         this.velX -= this.horizontalAcceleration * frameTime;
         constrainHorizontalVelocity();
@@ -187,7 +189,7 @@ public abstract class Entity {
         this.velX += this.horizontalAcceleration * frameTime;
         constrainHorizontalVelocity();
     }
-    
+
     protected void decelerate(double frameTime) {
         if (this.velX > 0) {
             this.velX -= this.horizontalDeceleration * frameTime;
@@ -201,7 +203,7 @@ public abstract class Entity {
             }
         }
     }
-    
+
     public void accelerateDownwards(double frameTime) {
         this.velY += gravity * frameTime;
         contrainVerticalVelocity();
@@ -211,26 +213,26 @@ public abstract class Entity {
         this.velY += this.verticalAcceleration * frameTime;
         contrainVerticalVelocity();
     }
-    
-    protected void constrainHorizontalVelocity(){
+
+    protected void constrainHorizontalVelocity() {
         if (this.velX < -this.maxVelocity) {
             this.velX = -this.maxVelocity;
         }
-        
+
         if (this.velX > this.maxVelocity) {
             this.velX = this.maxVelocity;
         }
     }
-    
-    protected void contrainVerticalVelocity(){
+
+    protected void contrainVerticalVelocity() {
         if (this.velY > this.maxFallingSpeed) {
             this.velY = this.maxFallingSpeed;
         }
-        if(this.velY < this.maxJumpVelocity){
+        if (this.velY < this.maxJumpVelocity) {
             this.velY = this.maxJumpVelocity;
         }
     }
-    
+
     public void jump(double frameTime) {
         if (this.onGround) {
             this.velY = this.jumpVelocityInitial;
@@ -239,8 +241,8 @@ public abstract class Entity {
             accelerateUpwards(frameTime);
         }
     }
-    
-    public void move(double frameTime){
+
+    public void move(double frameTime) {
         /*It it is very important to call moveVertically method first because 
         when the player tries to fire or scratch running it will be swept away from the map.
         The cause is horizontal collision handler and continues tries to fall
@@ -320,8 +322,8 @@ public abstract class Entity {
             }
         }
     }
-    
-    public void hit(int damage){
+
+    public void hit(int damage) {
         this.health -= damage;
         setFlinching(true);
     }
@@ -338,14 +340,14 @@ public abstract class Entity {
         return this.health > 0;
     }
 
-    public void update(KeyboardState keyboardState, double frameTime){
+    public void update(KeyboardState keyboardState, double frameTime) {
         if (this.flinching) {
             this.flinchTime += frameTime;
             int number = (int) (this.flinchTime * 1000);
-            this.needDraw = number % 10 == 0;  
+            this.needDraw = number % 10 == 0;
             if (this.flinchTime >= this.flinchPeriod) {
                 this.flinchTime = 0;
-                this.flinching = false;            
+                this.flinching = false;
             }
         } else {
             this.needDraw = true;

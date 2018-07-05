@@ -1,6 +1,7 @@
 package com.igorternyuk.platformer.gamestate;
 
 import com.igorternyuk.platformer.gameplay.Game;
+import com.igorternyuk.platformer.gameplay.GameStatus;
 import com.igorternyuk.platformer.gameplay.entities.Entity;
 import com.igorternyuk.platformer.gameplay.entities.EntityType;
 import com.igorternyuk.platformer.gameplay.entities.enemies.Snail;
@@ -16,6 +17,9 @@ import java.awt.Graphics2D;
 import com.igorternyuk.platformer.input.KeyboardState;
 import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
+import com.igorternyuk.platformer.utils.Painter;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -30,6 +34,8 @@ import java.util.stream.Collectors;
  * @author igor
  */
 public class LevelState extends GameState {
+    private static final Font FONT_GAME_STATUS = new Font("Verdana", Font.BOLD,
+            48);
     public static final double SCALE = 2;
     private static final int SCREEN_HALF_WIDTH = (int) (Game.WIDTH / 2 / SCALE);
     private static final int SCREEN_HALF_HEIGHT =
@@ -39,6 +45,7 @@ public class LevelState extends GameState {
     private Player player;
     private List<Entity> entities = new ArrayList<>();
     private Map<EntityType, Consumer<Point>> entityCreatorMap = new HashMap<>();
+    private GameStatus gameStatus = GameStatus.PLAY;
 
     public LevelState(GameStateManager gsm, ResourceManager rm) {
         super(gsm, rm);
@@ -106,6 +113,7 @@ public class LevelState extends GameState {
     private void startNewGame() {
         this.entities.clear();
         createEntities();
+        gameStatus = GameStatus.PLAY;
     }
     
     private void createEntities() {
@@ -135,6 +143,8 @@ public class LevelState extends GameState {
 
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
+        if(this.gameStatus != GameStatus.PLAY)
+            return;
         if (this.player == null) {
             return;
         }
@@ -262,11 +272,35 @@ public class LevelState extends GameState {
 
     @Override
     public void onKeyReleased(int keyCode) {
-        if (keyCode == KeyEvent.VK_F) {
-            this.player.resetAlreadyFired();
-        } else if (keyCode == KeyEvent.VK_R) {
-            this.player.setCanScratch(true);
+        switch (keyCode) {
+            case KeyEvent.VK_F:
+                this.player.resetAlreadyFired();
+                break;
+            case KeyEvent.VK_R:
+                this.player.setCanScratch(true);
+                break;
+            case KeyEvent.VK_SPACE:
+                togglePause();
+                break;
+            case KeyEvent.VK_N:
+                startNewGame();
+                break;
+            default:
+                break;
         }
+    }
+    
+    private void togglePause(){
+        if(this.gameStatus == GameStatus.PLAY){
+            this.gameStatus = GameStatus.PAUSED;
+        } else if(this.gameStatus == GameStatus.PAUSED){
+            this.gameStatus = GameStatus.PLAY;
+        }
+    }
+    
+    private void drawGameStatus(Graphics2D g){
+        Painter.drawCenteredString(g, this.gameStatus.getDescription(),
+                FONT_GAME_STATUS, this.gameStatus.getColor(), Game.HEIGHT / 2);
     }
 
     @Override
@@ -282,6 +316,8 @@ public class LevelState extends GameState {
         for (int i = this.entities.size() - 1; i >= 0; --i) {
             this.entities.get(i).draw(g);
         }
+        
+        drawGameStatus(g);
     }
 
 }
