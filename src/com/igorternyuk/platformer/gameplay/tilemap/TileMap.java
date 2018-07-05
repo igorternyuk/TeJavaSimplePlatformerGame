@@ -1,15 +1,19 @@
 package com.igorternyuk.platformer.gameplay.tilemap;
 
 import com.igorternyuk.platformer.gameplay.Game;
+import com.igorternyuk.platformer.gameplay.entities.EntityType;
 import com.igorternyuk.platformer.gamestate.LevelState;
 import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +24,10 @@ import java.util.logging.Logger;
 public class TileMap {
 
     private static final double SCROLL_SPEED = 0.1;
+    private static final int SNAIL_CODE = 55;
+    private static final int SPIDER_CODE = 66;
+    private static final int POWERUP_CODE = 77;
+    private static final int PLAYER_CODE = 100;
     private double cameraX, cameraY;
 
     private int[][] map;
@@ -34,6 +42,8 @@ public class TileMap {
 
     private int rowOffset, colOffset;
     private int numRowsToDraw, numColsToDraw;
+    private Map<Integer, EntityType> entityCodeTypeMap = new HashMap<>();
+    private Map<Point, EntityType> entityPositions = new HashMap<>();
 
     public TileMap(ResourceManager resourceManager, int tileSize) {
         this.tileSize = tileSize;
@@ -42,6 +52,22 @@ public class TileMap {
         this.numRowsToDraw = Game.HEIGHT / this.tileSize;
         this.cameraX = 0;
         this.cameraY = 0;
+        putEntityCodesToTheMap();
+    }
+
+    private void putEntityCodesToTheMap() {
+        this.entityCodeTypeMap.put(PLAYER_CODE, EntityType.PLAYER);
+        this.entityCodeTypeMap.put(SNAIL_CODE, EntityType.SNAIL);
+        this.entityCodeTypeMap.put(SPIDER_CODE, EntityType.SPIDER);
+        this.entityCodeTypeMap.put(POWERUP_CODE, EntityType.POWERUP);
+    }
+
+    private boolean isEntityCode(int code) {
+        return this.entityCodeTypeMap.containsKey(code);
+    }
+
+    public Map<Point, EntityType> getEntityPositions() {
+        return this.entityPositions;
     }
 
     public int getCameraX() {
@@ -72,6 +98,9 @@ public class TileMap {
     public TileType getTileType(int row, int col) {
         if (areCoordinatesValid(row, col)) {
             int val = this.map[row][col];
+            if (isEntityCode(val)) {
+                return TileType.REGULAR;
+            }
             int r = val / this.numTilesX;
             int c = val % this.numTilesX;
             return this.tiles[r][c].getType();
@@ -107,7 +136,14 @@ public class TileMap {
                 String currentLine = bufferedReader.readLine();
                 String[] values = currentLine.split(delimeter);
                 for (int col = 0; col < this.numCols; ++col) {
-                    this.map[row][col] = Integer.parseInt(values[col]);
+                    int val = Integer.parseInt(values[col]);
+                    this.map[row][col] = val;
+                    if (isEntityCode(val)) {
+                        Point pos = new Point(col * this.tileSize, row
+                                * this.tileSize);
+                        this.entityPositions.put(pos, this.entityCodeTypeMap.
+                                get(val));
+                    }
                 }
             }
 
@@ -162,16 +198,19 @@ public class TileMap {
                     break;
                 }
                 int val = this.map[row][col];
+                if (isEntityCode(val)) {
+                    continue;
+                }
                 int r = val / this.numTilesX;
                 int c = val % this.numTilesX;
                 BufferedImage image = this.tiles[r][c].getImage();
                 g.drawImage(image,
-                        
-                        (int) LevelState.SCALE * (col * this.tileSize - (int) cameraX),
-                        
-                        (int) LevelState.SCALE * (row * this.tileSize - (int) cameraY),
-                         (int) LevelState.SCALE * this.tileSize,
-                         (int) LevelState.SCALE * this.tileSize, null);
+                        (int) LevelState.SCALE * (col * this.tileSize
+                        - (int) cameraX),
+                        (int) LevelState.SCALE * (row * this.tileSize
+                        - (int) cameraY),
+                        (int) LevelState.SCALE * this.tileSize,
+                        (int) LevelState.SCALE * this.tileSize, null);
             }
         }
     }

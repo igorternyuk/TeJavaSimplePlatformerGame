@@ -9,9 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import com.igorternyuk.platformer.gamestate.GameStateManager;
-import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 import com.igorternyuk.platformer.utils.Time;
 
@@ -68,12 +66,6 @@ public class Game implements Runnable {
     }
 
     public void onWindowCloseRequest() {
-        int reply = JOptionPane.showConfirmDialog(display.getWindow(),
-                "Do you really want to exit?",
-                "Confirm exit, please",
-                JOptionPane.YES_NO_OPTION);
-        if(reply == JOptionPane.NO_OPTION)
-            return;
         stop();
         System.exit(0);
     }

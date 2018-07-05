@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
  * @author igor
  */
 public class Explosion extends Entity {
-    
+
     private AnimationManager<ExplosionAnimationType> animationManager =
             new AnimationManager<>();
 
@@ -27,15 +27,17 @@ public class Explosion extends Entity {
         loadAnimations();
         this.animationManager.setCurrentAnimation(
                 ExplosionAnimationType.EXPLOSION);
-        this.animationManager.getCurrentAnimation().start(AnimationPlayMode.ONCE);
+        this.animationManager.getCurrentAnimation().
+                start(AnimationPlayMode.ONCE);
     }
-    
-    private void loadAnimations(){
+
+    private void loadAnimations() {
         BufferedImage spriteSheet = this.level.getResourceManager().getImage(
                 ImageIdentifier.EXPLOSION);
-        for(ExplosionAnimationType type: ExplosionAnimationType.values()){
-            this.animationManager.addAnimation(type, new Animation(spriteSheet,
-                    type.getAnimationSpeed(), type.getFrames()));
+        for (ExplosionAnimationType animType : ExplosionAnimationType.values()) {
+            this.animationManager.addAnimation(animType, new Animation(
+                    spriteSheet, animType.getAnimationSpeed(), animType.
+                    getFrames()));
         }
     }
 
@@ -55,15 +57,16 @@ public class Explosion extends Entity {
     public void update(KeyboardState keyboardState, double frameTime) {
         super.update(keyboardState, frameTime);
         this.animationManager.update(frameTime);
-        if(this.animationManager.getCurrentAnimation().hasBeenPlayedOnce()){
+        if (this.animationManager.getCurrentAnimation().hasBeenPlayedOnce()) {
             this.health = 0;
         }
     }
 
     @Override
     public void draw(Graphics2D g) {
-        if(!this.needDraw)
+        if (!this.needDraw) {
             return;
+        }
         this.animationManager.draw(g, (int) this.x, (int) this.y,
                 LevelState.SCALE, LevelState.SCALE);
     }

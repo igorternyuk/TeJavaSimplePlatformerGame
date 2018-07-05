@@ -2,8 +2,6 @@ package com.igorternyuk.platformer.gamestate;
 
 import com.igorternyuk.platformer.gameplay.Game;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.List;
 import com.igorternyuk.platformer.input.KeyboardState;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 import java.util.Stack;

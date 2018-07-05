@@ -8,7 +8,7 @@ import com.igorternyuk.platformer.gameplay.entities.enemies.Spider;
 import com.igorternyuk.platformer.gameplay.entities.explosions.Explosion;
 import com.igorternyuk.platformer.gameplay.entities.player.Player;
 import com.igorternyuk.platformer.gameplay.entities.powerups.PowerUp;
-import com.igorternyuk.platformer.gameplay.entities.powerups.PowerupType;
+import com.igorternyuk.platformer.gameplay.entities.powerups.PowerUpType;
 import com.igorternyuk.platformer.gameplay.entities.weapon.FireBall;
 import com.igorternyuk.platformer.gameplay.tilemap.TileMap;
 import com.igorternyuk.platformer.graphics.images.Background;
@@ -16,9 +16,13 @@ import java.awt.Graphics2D;
 import com.igorternyuk.platformer.input.KeyboardState;
 import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -26,7 +30,6 @@ import java.util.stream.Collectors;
  * @author igor
  */
 public class LevelState extends GameState {
-
     public static final double SCALE = 2;
     private static final int SCREEN_HALF_WIDTH = (int) (Game.WIDTH / 2 / SCALE);
     private static final int SCREEN_HALF_HEIGHT =
@@ -35,9 +38,34 @@ public class LevelState extends GameState {
     private Background background;
     private Player player;
     private List<Entity> entities = new ArrayList<>();
+    private Map<EntityType, Consumer<Point>> entityCreatorMap = new HashMap<>();
 
     public LevelState(GameStateManager gsm, ResourceManager rm) {
         super(gsm, rm);
+        initEntityCreator();
+    }
+    
+    
+    private void initEntityCreator() {
+        this.entityCreatorMap.put(EntityType.PLAYER, (pos) -> {
+            this.player = new Player(this);
+            this.player.setPosition(pos.x, pos.y);
+            this.entities.add(this.player);
+        });
+        
+        this.entityCreatorMap.put(EntityType.SNAIL, (pos) -> {
+            this.entities.add(new Snail(this, pos.x, pos.y + 10));
+        });
+
+        this.entityCreatorMap.put(EntityType.SPIDER, (pos) -> {
+            this.entities.add(new Spider(this, pos.x, pos.y));
+        });
+
+        this.entityCreatorMap.put(EntityType.POWERUP, (pos) -> {
+            final PowerUpType powerupType = (Math.random() > 0.5) ?
+                    PowerUpType.EXTRA_FIRES : PowerUpType.EXTRA_HEALTH;
+            this.entities.add(new PowerUp(this, powerupType, pos.x, pos.y));
+        });
     }
 
     public List<Entity> getEntities() {
@@ -76,33 +104,19 @@ public class LevelState extends GameState {
     }
 
     private void startNewGame() {
-        createPlayer();
-        createEnemies();
-        createPowerups();
+        this.entities.clear();
+        createEntities();
     }
-
-    private void createPlayer() {
-        this.player = new Player(this);
-        this.player.setPosition(2 * this.tileMap.getTileSize(),
-                6 * this.tileMap.getTileSize());
-        this.entities.add(this.player);
-    }
-
-    private void createEnemies() {
-        Snail snail = new Snail(this, 6 * 30, 6 * 30 + 10);
-        this.entities.add(snail);
-        Spider s1 = new Spider(this, 7 * 30, 1 * 30);
-        this.entities.add(s1);
-        System.out.println("this.entities.size()" + this.entities.size());
-    }
-
-    private void createPowerups() {
-        PowerUp p1 = new PowerUp(this, EntityType.POWERUP,
-                PowerupType.EXTRA_HEALTH, 16 * 30, 2 * 30);
-        PowerUp p2 = new PowerUp(this, EntityType.POWERUP,
-                PowerupType.EXTRA_FIRES, 5 * 30, 5 * 30);
-        this.entities.add(p1);
-        this.entities.add(p2);
+    
+    private void createEntities() {
+        Map<Point, EntityType> enemyPosiitons = this.tileMap.
+                getEntityPositions();
+        enemyPosiitons.keySet().forEach((Point point) -> {
+            EntityType type = enemyPosiitons.get(point);
+            if(this.entityCreatorMap.containsKey(type)){
+                this.entityCreatorMap.get(type).accept(point);
+            }
+        });
     }
 
     @Override
@@ -159,59 +173,60 @@ public class LevelState extends GameState {
     private void checkCollisions() {
         checkPlayerEnemyCollisions();
         checkFireBallEnemyCollisions();
-        checkPowerups();        
+        checkPowerups();
     }
-    
-    private void checkPowerups(){
+
+    private void checkPowerups() {
         List<PowerUp> powerups = getPowerups();
-        for(int i = 0; i < powerups.size(); ++i){
+        for (int i = 0; i < powerups.size(); ++i) {
             PowerUp powerup = powerups.get(i);
-            if(this.player.collides(powerup)){
+            if (this.player.collides(powerup)) {
                 this.player.collectPowerup(powerup);
                 break;
             }
         }
     }
-    
-    private void checkPlayerEnemyCollisions(){
+
+    private void checkPlayerEnemyCollisions() {
         List<Entity> enemies = getEnemies();
-        for(int i = 0; i < enemies.size(); ++i){
+        for (int i = 0; i < enemies.size(); ++i) {
             Entity enemy = enemies.get(i);
-            if(enemy.collides(this.player)){
+            if (enemy.collides(this.player)) {
                 handlePlayerEnemyCollision(this.player, enemy);
                 break;
             }
         }
     }
-    
-    private void checkFireBallEnemyCollisions(){
+
+    private void checkFireBallEnemyCollisions() {
         List<Entity> enemies = getEnemies();
         List<FireBall> fireballs = getFireBalls();
-        for(int i = 0; i < fireballs.size(); ++i){
-            for(int j = 0; j < enemies.size(); ++j){
+        for (int i = 0; i < fireballs.size(); ++i) {
+            for (int j = 0; j < enemies.size(); ++j) {
                 FireBall fireball = fireballs.get(i);
                 Entity enemy = enemies.get(j);
-                if(!enemy.isFlinching() && fireball.collides(enemy)){
+                if (!enemy.isFlinching() && fireball.collides(enemy)) {
                     handleFireBallEnemyCollision(fireball, enemy);
                     break;
-                }                
+                }
             }
         }
     }
-    
-    private void handleFireBallEnemyCollision(FireBall fireball, Entity enemy){
-        if(!enemy.isFlinching() && fireball.collides(enemy)){
+
+    private void handleFireBallEnemyCollision(FireBall fireball, Entity enemy) {
+        if (!enemy.isFlinching() && fireball.collides(enemy)) {
             fireball.setHit(true);
             enemy.hit(fireball.getDamage());
-            if(!enemy.isAlive()){
-                this.entities.add(new Explosion(this, enemy.getX(), enemy.getY()));
+            if (!enemy.isAlive()) {
+                this.entities.add(new Explosion(this, enemy.getAbsX(), enemy.
+                        getAbsY()));
             }
         }
     }
-    
+
     private void handlePlayerEnemyCollision(Player player, Entity enemy) {
-        if(!player.isFlinching() && !enemy.isFlinching()){
-            if(player.isScratching() && player.isInScratchArea(enemy)){
+        if (!player.isFlinching() && !enemy.isFlinching()) {
+            if (player.isScratching() && player.isInScratchArea(enemy)) {
                 enemy.hit(this.player.getScratchDamage());
             } else {
                 this.player.hit(enemy.getDamage());

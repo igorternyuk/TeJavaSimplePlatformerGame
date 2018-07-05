@@ -76,18 +76,21 @@ public class Spider extends Entity {
         moveVertically(frameTime);
         this.sprite.setPosition(getAbsX(), getAbsY());
     }
+    
+    private void drawWeb(Graphics2D g){
+        g.setColor(Color.black);
+        g.drawLine((int) ((getAbsX() + getWidth() / 2) * LevelState.SCALE),
+                (int) (0 * LevelState.SCALE),
+                (int) ((getAbsX() + getWidth() / 2) * LevelState.SCALE),
+                (int) ((getAbsTop() + getHeight() / 2) * LevelState.SCALE));
+    }
 
     @Override
     public void draw(Graphics2D g) {
         if (!this.needDraw) {
             return;
         }
-        //draw the spider's web
-        g.setColor(Color.black);
-        g.drawLine((int) ((getAbsX() + getWidth() / 2) * LevelState.SCALE),
-                (int) (0 * LevelState.SCALE),
-                (int) ((getAbsX() + getWidth() / 2) * LevelState.SCALE),
-                (int) ((getAbsTop() + getHeight() / 2) * LevelState.SCALE));
+        drawWeb(g);
         this.sprite.draw(g);
     }
 
