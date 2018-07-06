@@ -21,7 +21,6 @@ public class FireBall extends Entity {
 
     private boolean alive = true;
     private boolean hit = false;
-    private int damage;
     private AnimationManager<FireBallAnimationType> animationMananger =
             new AnimationManager<>();
 
@@ -41,7 +40,7 @@ public class FireBall extends Entity {
         this.y = player.top() + player.getHeight() / 4;
         this.velY = 0;
         this.maxVelocity = 200;
-        this.gravity = 0.1;
+        this.gravity = 0.3;
         this.maxFallingSpeed = 100;
         AnimationFacing currentPlayerFacing = player.getAnimationFacing();
         if (currentPlayerFacing == AnimationFacing.RIGHT) {
@@ -72,6 +71,7 @@ public class FireBall extends Entity {
         this.hit = hit;
     }
     
+    @Override
     public int getDamage() {
         return this.damage;
     }

@@ -52,8 +52,8 @@ public class Player extends Entity {
         this.maxFallingSpeed = 40;
         this.jumpVelocityInitial = -3;
         this.maxJumpVelocity = -6;
-        this.verticalAcceleration = -0.4;
-        this.gravity = 0.7;
+        this.verticalAcceleration = -0.5;
+        this.gravity = 2.0;
         this.onGround = true;
         this.resourceMananger = level.getResourceManager();
         this.animationManager = new AnimationManager<>();
@@ -67,15 +67,19 @@ public class Player extends Entity {
     }
 
     public boolean isInScratchArea(Entity entity) {
+        System.out.println("Check if enemy in the scratch area");
         if (!entity.collides(this)) {
+            System.out.println("NO COLLISION");
             return false;
         }
         AnimationFacing currentPlayerFacing = this.animationManager.
                 getCurrentAnimation().getFacing();
         if (currentPlayerFacing == AnimationFacing.LEFT && entity.right()
                 > left()) {
+            System.out.println("Enemy in the left scratch area");
             return true;
-        } else if (currentPlayerFacing == AnimationFacing.RIGHT && entity.left()
+        } 
+        if (currentPlayerFacing == AnimationFacing.RIGHT && entity.left()
                 < right()) {
             return true;
         }
@@ -268,7 +272,6 @@ public class Player extends Entity {
         move(frameTime);
         attackIfHasTo();
         updateAnimations(frameTime);
-        
     }
 
     private void resetVelocityIfCannotMove() {

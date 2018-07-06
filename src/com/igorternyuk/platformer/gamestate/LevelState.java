@@ -18,7 +18,6 @@ import com.igorternyuk.platformer.input.KeyboardState;
 import com.igorternyuk.platformer.resourcemanager.ImageIdentifier;
 import com.igorternyuk.platformer.resourcemanager.ResourceManager;
 import com.igorternyuk.platformer.utils.Painter;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -58,6 +57,8 @@ public class LevelState extends GameState {
             this.player = new Player(this);
             this.player.setPosition(pos.x, pos.y);
             this.entities.add(this.player);
+            System.out.println("New player was created px = " 
+                    + this.player.getX() + " py = " + this.player.getY());
         });
         
         this.entityCreatorMap.put(EntityType.SNAIL, (pos) -> {
@@ -113,6 +114,7 @@ public class LevelState extends GameState {
     private void startNewGame() {
         this.entities.clear();
         createEntities();
+        scrollTileMapCamera();
         gameStatus = GameStatus.PLAY;
     }
     
@@ -143,11 +145,15 @@ public class LevelState extends GameState {
 
     @Override
     public void update(KeyboardState keyboardState, double frameTime) {
-        if(this.gameStatus != GameStatus.PLAY)
+        if(this.gameStatus != GameStatus.PLAY || this.player == null)
             return;
-        if (this.player == null) {
-            return;
-        }
+        updateEntities(keyboardState, frameTime);
+        checkCollisions();
+        checkGameStatus();
+        scrollTileMapCamera();
+    }
+    
+    private void updateEntities(KeyboardState keyboardState, double frameTime){
         //Remove the dead entities
         this.entities.removeIf(e -> e != this.player && !e.isAlive());
 
@@ -155,10 +161,6 @@ public class LevelState extends GameState {
         for (int i = this.entities.size() - 1; i >= 0; --i) {
             this.entities.get(i).update(keyboardState, frameTime);
         }
-
-        checkCollisions();
-
-        scrollTileMapCamera();
     }
 
     private List<Entity> getEnemies() {
@@ -262,8 +264,13 @@ public class LevelState extends GameState {
         }
     }
     
-    public void checkGameStatus(){
-        
+    private void checkGameStatus(){
+        if(!this.player.isAlive()){
+            this.gameStatus = GameStatus.PLAYER_LOST;
+        }
+        if(getEnemies().isEmpty()){
+            this.gameStatus = GameStatus.PLAYER_WON;
+        }
     }
 
     @Override
@@ -319,5 +326,4 @@ public class LevelState extends GameState {
         
         drawGameStatus(g);
     }
-
 }
