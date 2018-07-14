@@ -67,23 +67,17 @@ public class Player extends Entity {
     }
 
     public boolean isInScratchArea(Entity entity) {
-        System.out.println("Check if enemy in the scratch area");
         if (!entity.collides(this)) {
-            System.out.println("NO COLLISION");
             return false;
         }
         AnimationFacing currentPlayerFacing = this.animationManager.
                 getCurrentAnimation().getFacing();
         if (currentPlayerFacing == AnimationFacing.LEFT && entity.right()
                 > left()) {
-            System.out.println("Enemy in the left scratch area");
             return true;
         } 
-        if (currentPlayerFacing == AnimationFacing.RIGHT && entity.left()
-                < right()) {
-            return true;
-        }
-        return false;
+        return currentPlayerFacing == AnimationFacing.RIGHT && entity.left()
+                < right();
     }
 
     @Override

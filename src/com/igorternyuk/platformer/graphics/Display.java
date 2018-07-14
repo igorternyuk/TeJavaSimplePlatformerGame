@@ -1,6 +1,5 @@
 package com.igorternyuk.platformer.graphics;
 
-import com.igorternyuk.platformer.gameplay.Game;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -14,6 +13,7 @@ import java.awt.image.DataBufferInt;
 import java.util.Arrays;
 import javax.swing.JFrame;
 import com.igorternyuk.platformer.input.KeyboardState;
+import java.awt.event.MouseListener;
 
 /**
  *
@@ -103,6 +103,10 @@ public class Display {
 
     public void addKeyListener(KeyListener listener) {
         this.canvas.addKeyListener(listener);
+    }
+    
+    public void addMouseListener(MouseListener listener){
+        this.canvas.addMouseListener(listener);
     }
 
     public void addWindowListener(WindowListener listener) {

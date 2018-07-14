@@ -120,10 +120,10 @@ public class TileMap {
     }
 
     public void loadMap(String pathToMapFile) {
-        InputStream in = this.getClass().getResourceAsStream(pathToMapFile);
-        BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(in));
-        try {
+
+        try (InputStream in = this.getClass().getResourceAsStream(pathToMapFile);
+                BufferedReader bufferedReader = new BufferedReader(
+                        new InputStreamReader(in));) {
             this.numCols = Integer.parseInt(bufferedReader.readLine());
             this.numRows = Integer.parseInt(bufferedReader.readLine());
             this.width = this.numCols * this.tileSize;
